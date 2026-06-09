@@ -1047,7 +1047,9 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
   }
 
   renderKpiHeatmap() {
-    import('leaflet').then(async (L) => {
+    import('leaflet').then(async (LeafletModule) => {
+      const L = LeafletModule.default || LeafletModule;
+      (window as any).L = L;
       await import('leaflet.heat');
       
       const mapDiv = document.getElementById('kpiMap');
