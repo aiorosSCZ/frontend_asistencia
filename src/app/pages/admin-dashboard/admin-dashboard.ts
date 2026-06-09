@@ -374,7 +374,9 @@ export class AdminDashboard implements OnInit {
   mapInstance: any = null;
 
   renderMap() {
-    import('leaflet').then(async (L) => {
+    import('leaflet').then(async (LeafletModule) => {
+      const L = LeafletModule.default || LeafletModule;
+      (window as any).L = L;
       await import('leaflet.heat');
       const mapElement = document.getElementById('incidentsMap');
       if (!mapElement) return;
