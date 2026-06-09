@@ -374,14 +374,15 @@ export class AdminDashboard implements OnInit {
   mapInstance: any = null;
 
   renderMap() {
-    import('leaflet').then(async (LeafletModule) => {
-      const L = LeafletModule.default || LeafletModule;
-      (window as any).L = L;
-      await import('leaflet.heat');
-      const mapElement = document.getElementById('incidentsMap');
-      if (!mapElement) return;
+    setTimeout(() => {
+      import('leaflet').then(async (LeafletModule) => {
+        const L = LeafletModule.default || LeafletModule;
+        (window as any).L = L;
+        await import('leaflet.heat');
+        const mapElement = document.getElementById('incidentsMap');
+        if (!mapElement) return;
 
-      if (!this.mapInstance) {
+        if (!this.mapInstance) {
         // Centro en Santa Cruz de la Sierra por defecto
         this.mapInstance = L.map('incidentsMap').setView([-17.7833, -63.1821], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -591,6 +592,7 @@ export class AdminDashboard implements OnInit {
         }
       }, 100);
     });
+    }, 150); // Fin del setTimeout
   }
 
   procesandoId: number | null = null;
