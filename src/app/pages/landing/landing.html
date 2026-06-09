@@ -1,0 +1,111 @@
+<nav class="navbar">
+  <div class="nav-container glass-panel">
+    <div class="logo">
+      <span class="logo-icon">🚨</span>
+      <span class="logo-text">AsisCar<span class="dot">.</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="#clientes">Para Clientes</a>
+      <a href="#talleres">Para Talleres</a>
+      <a href="#tecnologia">Tecnología IA</a>
+    </div>
+    <div class="nav-actions">
+      <a routerLink="/login" class="btn btn-outline" style="padding: 8px 20px; display: inline-block; text-align: center;">Iniciar Sesión</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="gradient-sphere red-sphere"></div>
+      <div class="gradient-sphere yellow-sphere"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="animate-fade-in" style="animation-delay: 0s;">
+        La Asistencia Vehicular<br>Más Inteligente y Rápida
+      </h1>
+      <p class="subtitle animate-fade-in" style="animation-delay: 0.2s;">
+        Conectamos tu emergencia con el taller más adecuado en tiempo récord. Usamos inteligencia artificial para
+        diagnosticar el problema y geolocalización para que la ayuda llegue volando.
+      </p>
+
+      <div class="cta-group animate-fade-in" style="animation-delay: 0.4s;">
+        <button class="btn btn-primary" style="font-size: 1.1rem; padding: 16px 32px;">
+          Descargar App para Clientes
+        </button>
+        <a routerLink="/registro-taller" class="btn btn-premium-dark" style="font-size: 1.1rem; padding: 16px 32px;">
+          Registrar mi Taller
+        </a>
+      </div>
+
+      <div class="hero-stats animate-fade-in glass-panel" style="animation-delay: 0.6s;">
+        <div class="stat">
+          <span class="stat-num">IA</span>
+          <span class="stat-desc">Diagnóstico Multimodal</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">&lt; 15m</span>
+          <span class="stat-desc">Tiempo de respuesta</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">24/7</span>
+          <span class="stat-desc">Disponibilidad absoluta</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="tecnologia">
+    <h2 class="section-title">El poder de la IA en tu bolsillo</h2>
+    <div class="features-grid">
+      <div class="feature-card glass-panel">
+        <div class="icon">🎙️</div>
+        <h3>Reconocimiento de Voz</h3>
+        <p>¿Nervioso por el percance? Solo graba un audio. Nuestra IA transcribe tu problema al instante y extrae los
+          detalles críticos automáticamente.</p>
+      </div>
+      <div class="feature-card glass-panel">
+        <div class="icon">📷</div>
+        <h3>Análisis de Daños Visuales</h3>
+        <p>Toma fotos del vehículo. El modelo de visión artificial clasificará el incidente (motor, llanta, colisión)
+          asistiéndote en el diagnóstico.</p>
+      </div>
+      <div class="feature-card glass-panel">
+        <div class="icon">🗺️</div>
+        <h3>Matching Georreferenciado</h3>
+        <p>La plataforma evalúa la distancia real y disponibilidad, asignando el técnico óptimo del taller más cercano
+          hacia tu posición.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Workshop CTA Section -->
+  <section class="taller-cta" id="talleres">
+    <div class="taller-content glass-panel">
+      <h2>Moderniza tu taller mecánico</h2>
+      <p>Miles de conductores buscan auxilio en vía a diario. Con RescueGo, recibes solicitudes claras, una ficha
+        preliminar con el problema detectado por IA y la ubicación exacta del conductor.</p>
+      <ul class="benefits">
+        <li>✔️ Panel Web para gestionar tus órdenes.</li>
+        <li>✔️ Acepta o rechaza incidencias según tu capacidad.</li>
+        <li>✔️ Solo pagas 10% de comisión por trabajo realizado.</li>
+      </ul>
+      <a routerLink="/registro-taller" class="btn btn-primary" style="margin-top: 24px;">Únete a la Red de Talleres</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-content">
+    <div class="logo">
+      <span class="logo-icon">🚨</span>
+      <span class="logo-text">AsisCar<span class="dot">.</span></span>
+    </div>
+    <p>Plataforma Inteligente de Atención de Emergencias Vehiculares © 2026. <a routerLink="/admin-login" style="color: rgba(255,255,255,0.35); text-decoration: none; font-size: 0.8rem; margin-left: 12px; cursor: pointer;">Acceso Administrativo</a></p>
+  </div>
+</footer>

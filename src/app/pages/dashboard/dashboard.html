@@ -1,0 +1,1770 @@
+<div class="dashboard-layout" [class.sidebar-collapsed]="sidebarCollapsed">
+  <!-- Sidebar lateral -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">{{ initials }}</div>
+      <h2 class="brand-name" *ngIf="!sidebarCollapsed">{{ tallerData.razon_social }}</h2>
+      <button (click)="toggleSidebar()" class="sidebar-toggle-btn"
+        [title]="sidebarCollapsed ? 'Expandir menú' : 'Colapsar menú'">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.3s;"
+          [style.transform]="sidebarCollapsed ? 'rotate(180deg)' : 'none'">
+          <rect x="3" y="3" width="18" height="18" rx="3.5" />
+          <line x1="9" y1="3" x2="9" y2="21" stroke-dasharray="3 3" />
+        </svg>
+      </button>
+    </div>
+
+    <nav class="nav-menu">
+      <a class="nav-item" [class.active]="currentTab === 'inicio'" (click)="changeTab('inicio')"
+        [title]="sidebarCollapsed ? 'Inicio' : ''">
+        <span class="icon">🏠</span>
+        <span *ngIf="!sidebarCollapsed">Inicio {{ tallerData.estado_aprobacion === 'Pendiente' ? '(En Espera)' : ''
+          }}</span>
+      </a>
+
+      <div class="nav-section" *ngIf="tallerData.estado_aprobacion === 'Pendiente' && !sidebarCollapsed">Bloqueado hasta
+        aprobación</div>
+      <div class="nav-section" *ngIf="tallerData.estado_aprobacion === 'Aprobado' && !sidebarCollapsed">Operaciones
+      </div>
+
+      <a class="nav-item" [class.locked]="tallerData.estado_aprobacion === 'Pendiente'"
+        [class.active]="currentTab === 'incidentes'" (click)="changeTab('incidentes')"
+        [title]="sidebarCollapsed ? 'Incidentes' : ''">
+        <span class="icon">🚨</span>
+        <span *ngIf="!sidebarCollapsed">Incidentes</span>
+        <span class="lock-icon" *ngIf="tallerData.estado_aprobacion === 'Pendiente' && !sidebarCollapsed">🔒</span>
+      </a>
+      <a class="nav-item" [class.locked]="tallerData.estado_aprobacion === 'Pendiente'"
+        [class.active]="currentTab === 'ordenes'" (click)="changeTab('ordenes')"
+        [title]="sidebarCollapsed ? 'Órdenes de Taller' : ''">
+        <span class="icon">📋</span>
+        <span *ngIf="!sidebarCollapsed">Órdenes de Taller</span>
+        <span class="lock-icon" *ngIf="tallerData.estado_aprobacion === 'Pendiente' && !sidebarCollapsed">🔒</span>
+      </a>
+      <a class="nav-item" [class.locked]="tallerData.estado_aprobacion === 'Pendiente'"
+        [class.active]="currentTab === 'equipo'" (click)="changeTab('equipo')"
+        [title]="sidebarCollapsed ? 'Mi Equipo' : ''">
+        <span class="icon">👥</span>
+        <span *ngIf="!sidebarCollapsed">Mi Equipo</span>
+        <span class="lock-icon" *ngIf="tallerData.estado_aprobacion === 'Pendiente' && !sidebarCollapsed">🔒</span>
+      </a>
+      <a class="nav-item" [class.locked]="tallerData.estado_aprobacion === 'Pendiente'"
+        [class.active]="currentTab === 'servicios'" (click)="changeTab('servicios')"
+        [title]="sidebarCollapsed ? 'Servicios Taller' : ''">
+        <span class="icon">🏬</span>
+        <span *ngIf="!sidebarCollapsed">Servicios Taller</span>
+        <span class="lock-icon" *ngIf="tallerData.estado_aprobacion === 'Pendiente' && !sidebarCollapsed">🔒</span>
+      </a>
+      <a class="nav-item" [class.locked]="tallerData.estado_aprobacion === 'Pendiente'"
+        [class.active]="currentTab === 'habilidades'" (click)="changeTab('habilidades')"
+        [title]="sidebarCollapsed ? 'Habilidades Técnicos' : ''">
+        <span class="icon">🔧</span>
+        <span *ngIf="!sidebarCollapsed">Habilidades Técnicos</span>
+        <span class="lock-icon" *ngIf="tallerData.estado_aprobacion === 'Pendiente' && !sidebarCollapsed">🔒</span>
+      </a>
+      <a class="nav-item" [class.locked]="tallerData.estado_aprobacion === 'Pendiente'"
+        [class.active]="currentTab === 'pagos'" (click)="changeTab('pagos')" [title]="sidebarCollapsed ? 'Pagos' : ''">
+        <span class="icon">💰</span>
+        <span *ngIf="!sidebarCollapsed">Pagos</span>
+        <span class="lock-icon" *ngIf="tallerData.estado_aprobacion === 'Pendiente' && !sidebarCollapsed">🔒</span>
+      </a>
+      <a class="nav-item" [class.locked]="tallerData.estado_aprobacion === 'Pendiente'"
+        [class.active]="currentTab === 'kpis'" (click)="changeTab('kpis')" [title]="sidebarCollapsed ? 'Métricas' : ''">
+        <span class="icon">📈</span>
+        <span *ngIf="!sidebarCollapsed">Métricas e Informes</span>
+        <span class="lock-icon" *ngIf="tallerData.estado_aprobacion === 'Pendiente' && !sidebarCollapsed">🔒</span>
+      </a>
+      <a class="nav-item" [class.locked]="tallerData.estado_aprobacion === 'Pendiente'"
+        [class.active]="currentTab === 'perfil'" (click)="changeTab('perfil')"
+        [title]="sidebarCollapsed ? 'Configuración' : ''">
+        <span class="icon">⚙️</span>
+        <span *ngIf="!sidebarCollapsed">Configuración</span>
+        <span class="lock-icon" *ngIf="tallerData.estado_aprobacion === 'Pendiente' && !sidebarCollapsed">🔒</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div *ngIf="tallerData.estado_aprobacion === 'Pendiente' && !sidebarCollapsed"
+        style="text-align: center; color: #f59e0b; font-size: 0.85rem; margin-bottom: 12px; padding: 8px; background: rgba(245, 158, 11, 0.1); border-radius: 8px;">
+        ⚠️ Cuenta pendiente
+      </div>
+      <button class="btn btn-secondary"
+        style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;" (click)="logout()"
+        [title]="sidebarCollapsed ? 'Cerrar Sesión' : ''">
+        <span class="icon">🚪</span>
+        <span *ngIf="!sidebarCollapsed">Cerrar Sesión</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Contenido Principal -->
+  <main class="main-content">
+    <header class="topbar" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+      <h1>Panel de Control</h1>
+
+      <div style="margin-left: auto; display: flex; align-items: center; gap: 24px;">
+        <!-- Toggle Deslizable de Modo Oscuro -->
+        <div class="theme-switch-wrapper" style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 1.1rem;">☀️</span>
+          <label class="theme-switch" [title]="isDarkMode ? 'Cambiar a Modo Claro' : 'Cambiar a Modo Oscuro'">
+            <input type="checkbox" [checked]="isDarkMode" (change)="toggleTheme()">
+            <span class="theme-slider"></span>
+          </label>
+          <span style="font-size: 1.1rem;">🌙</span>
+        </div>
+
+        <!-- Campana de Notificaciones (Fase 3) -->
+        <div class="notification-bell" (click)="toggleNotificaciones()"
+          style="position: relative; cursor: pointer; font-size: 1.5rem; display: flex; align-items: center;">
+          🔔
+          <span class="bell-badge" *ngIf="solicitudes.length > 0"
+            style="position: absolute; top: -5px; right: -5px; background: #FF0055; color: white; border-radius: 50%; font-size: 0.75rem; padding: 2px 6px; font-weight: bold; border: 2px solid #000;">
+            {{ solicitudes.length }}
+          </span>
+
+          <!-- Dropdown flotante de Notificaciones -->
+          <div class="notifications-dropdown glass-panel" *ngIf="mostrarNotificaciones"
+            style="position: absolute; top: 45px; right: 0px; width: 320px; background: #1E293B; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <h4
+              style="margin: 0 0 12px 0; font-size: 1.1rem; color: #F8FAFC; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+              <span>🔔</span> Alertas en Curso
+            </h4>
+
+            <div class="dropdown-list" style="max-height: 300px; overflow-y: auto;">
+              <div class="dropdown-item" *ngFor="let sol of solicitudes"
+                style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: default; display: flex; flex-direction: column; gap: 6px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-weight: 700; font-size: 0.95rem; color: #F1F5F9;">{{ sol.tipo_problema }}</span>
+                  <span
+                    [style.background]="sol.nivel_prioridad === 'Alta' ? 'rgba(255, 0, 85, 0.15)' : sol.nivel_prioridad === 'Media' ? 'rgba(217, 119, 6, 0.15)' : 'rgba(16, 185, 129, 0.15)'"
+                    [style.color]="sol.nivel_prioridad === 'Alta' ? '#FF0055' : sol.nivel_prioridad === 'Media' ? '#D97706' : '#10B981'"
+                    style="padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold;">
+                    {{ sol.nivel_prioridad }}
+                  </span>
+                </div>
+                <div style="font-size: 0.85rem; color: #CBD5E1; font-weight: 600;">👤 {{ sol.cliente }}</div>
+                <div style="font-size: 0.8rem; color: #94A3B8; display: flex; justify-content: space-between;">
+                  <span>🚗 {{ sol.vehiculo }}</span>
+                  <span>📍 {{ sol.distancia_km }} km</span>
+                </div>
+              </div>
+
+              <div class="empty-dropdown" *ngIf="solicitudes.length === 0"
+                style="text-align: center; color: #94A3B8; padding: 24px 0; font-size: 0.9rem;">
+                📭 No tienes alertas pendientes
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-badge pending" *ngIf="tallerData.estado_aprobacion === 'Pendiente'" style="margin-left: 0;">
+          <span class="pulse"></span> Cuenta en Revisión
+        </div>
+
+        <div class="status-badge approved" *ngIf="tallerData.estado_aprobacion === 'Aprobado'" style="margin-left: 0;">
+          <span class="dot-green"></span> Operando (Abierto)
+        </div>
+      </div>
+    </header>
+
+    <!-- BANNER OFFLINE / SINC -->
+    <div *ngIf="!isOnline" class="offline-banner"
+      style="background-color: #EF4444; color: white; padding: 10px 16px; text-align: center; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; z-index: 100;">
+      <span>⚠️ Sin conexión a internet. Guardando en modo offline.</span>
+    </div>
+    <div *ngIf="isOnline && syncingOffline" class="sync-banner"
+      style="background-color: #F59E0B; color: white; padding: 10px 16px; text-align: center; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; z-index: 100;">
+      <span class="pulse"
+        style="background: white; width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
+      <span>Sincronizando datos con el servidor...</span>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VISTA 1: ESTADO PENDIENTE (REVISIÓN) -->
+    <!-- ========================================== -->
+    <div class="dashboard-body" *ngIf="tallerData.estado_aprobacion === 'Pendiente'">
+      <!-- Banner de Estado -->
+      <div class="status-banner glass-panel">
+        <div class="banner-content">
+          <h2>¡Tu cuenta está siendo verificada!</h2>
+          <p>Para garantizar la seguridad de la plataforma, un administrador está revisando tu perfil. Este proceso
+            suele tardar menos de 24 horas.</p>
+        </div>
+
+        <div class="progress-tracker">
+          <div class="step completed">
+            <div class="step-circle">✓</div>
+            <span>Registro Completado</span>
+          </div>
+          <div class="step-line active"></div>
+          <div class="step active">
+            <div class="step-circle pulse-circle">2</div>
+            <span>Validación de Datos</span>
+          </div>
+          <div class="step-line"></div>
+          <div class="step">
+            <div class="step-circle">3</div>
+            <span>Activación de Operaciones</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-grid">
+        <!-- Tarjeta: Carga de Documentos -->
+        <div class="card document-card glass-panel">
+          <div class="card-header">
+            <h3>Carga de Documentos</h3>
+            <span class="badge required">Requerido</span>
+          </div>
+          <p class="card-desc">Sube estos documentos obligatorios para agilizar tu aprobación.</p>
+
+          <div class="upload-zone">
+            <div *ngIf="uploadSuccess" class="locked-hint"
+              style="background: #ECFDF5; border-color: #10B981; color: #047857; margin-bottom: 16px;">
+              <span style="font-size: 1.2rem;">✅</span> Documentos subidos. Administrador notificado.
+            </div>
+
+            <!-- Carga de NIT -->
+            <div class="upload-item" [class.success]="tallerData.foto_nit_url">
+              <div class="upload-icon">📄</div>
+              <div class="upload-text">
+                <strong>Foto o PDF de tu NIT</strong>
+                <span *ngIf="!nitFile && !tallerData.foto_nit_url">Formatos: JPG, PNG, PDF. Max 5MB.</span>
+                <span *ngIf="nitFile" style="color: var(--primary);">Archivo: {{ nitFile.name }}</span>
+                <span *ngIf="tallerData.foto_nit_url" style="color: #10B981;">Subido correctamente.</span>
+              </div>
+              <input type="file" #fileNit style="display: none;" (change)="onFileSelected($event, 'nit')"
+                accept="image/*,.pdf">
+              <button *ngIf="!tallerData.foto_nit_url" class="btn btn-outline btn-sm"
+                (click)="fileNit.click()">Seleccionar</button>
+            </div>
+
+            <!-- Carga de Fachada -->
+            <div class="upload-item" [class.success]="tallerData.foto_local_url">
+              <div class="upload-icon">🏪</div>
+              <div class="upload-text">
+                <strong>Foto de la Fachada</strong>
+                <span *ngIf="!localFile && !tallerData.foto_local_url">Formatos: JPG, PNG. Max 5MB.</span>
+                <span *ngIf="localFile" style="color: var(--primary);">Archivo: {{ localFile.name }}</span>
+                <span *ngIf="tallerData.foto_local_url" style="color: #10B981;">Subido correctamente.</span>
+              </div>
+              <input type="file" #fileLocal style="display: none;" (change)="onFileSelected($event, 'local')"
+                accept="image/*">
+              <button *ngIf="!tallerData.foto_local_url" class="btn btn-outline btn-sm"
+                (click)="fileLocal.click()">Seleccionar</button>
+            </div>
+
+            <button class="btn btn-primary" style="margin-top: 16px;"
+              [disabled]="(!nitFile && !localFile) || uploading || uploadSuccess" (click)="uploadDocumentos()">
+              {{ uploading ? 'Subiendo...' : 'Enviar Documentos' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Tarjeta: Resumen -->
+        <div class="card profile-card glass-panel">
+          <div class="card-header">
+            <h3>Resumen de Perfil</h3>
+            <span class="badge info">Solo Lectura</span>
+          </div>
+          <div class="profile-details">
+            <div class="detail-group">
+              <label>Razón Social</label>
+              <div class="detail-value">{{ tallerData.razon_social }}</div>
+            </div>
+            <div class="detail-group">
+              <label>NIT</label>
+              <div class="detail-value">{{ tallerData.nit }}</div>
+            </div>
+          </div>
+          <div class="locked-hint">
+            <span style="font-size: 1.2rem;">🔒</span>
+            <span>Edición deshabilitada durante la validación.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <div class="dashboard-body animate-fade-in"
+      *ngIf="tallerData.estado_aprobacion === 'Aprobado' && currentTab === 'inicio'">
+
+      <!-- Grid Principal: Mapa a la Izquierda (más grande), Bandeja de Alertas a la Derecha -->
+      <div class="content-grid live-ops-grid">
+        <!-- Columna de Mapa y Estadísticas -->
+        <div class="map-column" style="display: flex; flex-direction: column; gap: 8px;">
+          <!-- Quick Stats (4 Tarjetas Compactas en Fila) arriba del mapa -->
+          <div class="stats-row compact-stats" style="margin-bottom: 0px;">
+            <div class="stat-card compact-stat">
+              <div class="stat-icon-sm alert">🚨</div>
+              <div class="stat-info">
+                <span class="stat-label-sm">Incidentes Activos</span>
+                <span class="stat-value-sm">{{ stats.incidentesActivos }}</span>
+              </div>
+            </div>
+            <div class="stat-card compact-stat">
+              <div class="stat-icon-sm success">✅</div>
+              <div class="stat-info">
+                <span class="stat-label-sm">Completados Hoy</span>
+                <span class="stat-value-sm">{{ stats.completadosHoy }}</span>
+              </div>
+            </div>
+            <div class="stat-card compact-stat">
+              <div class="stat-icon-sm cancel">❌</div>
+              <div class="stat-info">
+                <span class="stat-label-sm">Cancelados Hoy</span>
+                <span class="stat-value-sm">{{ stats.canceladosHoy }}</span>
+              </div>
+            </div>
+            <div class="stat-card compact-stat">
+              <div class="stat-icon-sm warning">💰</div>
+              <div class="stat-info">
+                <span class="stat-label-sm">Ganancias Hoy</span>
+                <span class="stat-value-sm">Bs. {{ stats.gananciasHoy | number:'1.2-2' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mapa de Operaciones -->
+          <div class="card map-card live-ops-map-card">
+            <div class="card-header" style="padding: 0; margin-bottom: 16px;">
+              <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700;">Mapa de Operaciones en Vivo</h3>
+            </div>
+            <div id="map" class="live-ops-map"></div>
+          </div>
+        </div>
+
+        <!-- Solicitudes de Auxilio / Bandeja de Emergencias -->
+        <div class="card requests-card live-ops-requests-card">
+          <div class="card-header" style="padding: 0; margin-bottom: 8px;">
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700;">Bandeja de Emergencias</h3>
+          </div>
+          <p class="live-ops-subtitle" style="margin-bottom: 20px; display: flex; align-items: center; gap: 6px;">
+            <span>🚨</span> Alerta en Vivo
+          </p>
+
+          <div class="requests-list live-ops-requests-list">
+            <!-- Solicitudes Reales en Tiempo Real (Fase 3) -->
+            <div class="request-item premium-card" *ngFor="let sol of solicitudes"
+              [style.border-left]="sol.nivel_prioridad === 'Alta' ? '5px solid #FF0055' : sol.nivel_prioridad === 'Media' ? '5px solid #D97706' : '5px solid #10B981'"
+              style="margin-bottom: 16px; padding: 16px; border-radius: 12px; border-left-width: 5px;">
+              <div class="request-header" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span class="priority-badge"
+                  [style.background]="sol.nivel_prioridad === 'Alta' ? 'rgba(255,0,85,0.1)' : sol.nivel_prioridad === 'Media' ? '#FEF3C7' : 'rgba(16, 185, 129, 0.1)'"
+                  [style.color]="sol.nivel_prioridad === 'Alta' ? '#FF0055' : sol.nivel_prioridad === 'Media' ? '#D97706' : '#10B981'"
+                  style="padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">
+                  {{ sol.nivel_prioridad }}
+                </span>
+                <span class="distance" style="color: var(--text-muted); font-size: 0.85rem;">📍 A {{ sol.distancia_km }}
+                  km</span>
+              </div>
+              <div class="request-body">
+                <h4 style="margin: 8px 0; color: var(--text-dark); font-size: 1.1rem; font-weight: 700;">{{
+                  sol.tipo_problema }}
+                </h4>
+                <p class="car-info" style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 12px;">👤 {{
+                  sol.cliente }}
+                </p>
+                <div class="ai-box"
+                  [style.background]="sol.nivel_prioridad === 'Alta' ? 'rgba(255, 0, 85, 0.03)' : sol.nivel_prioridad === 'Media' ? 'rgba(217, 119, 6, 0.03)' : 'rgba(16, 185, 129, 0.03)'"
+                  [style.border-left]="sol.nivel_prioridad === 'Alta' ? '4px solid #FF0055' : sol.nivel_prioridad === 'Media' ? '4px solid #D97706' : '4px solid #10B981'"
+                  style="padding: 12px; border-radius: 4px 12px 12px 4px; margin-bottom: 16px;">
+                  <div class="ai-title"
+                    [style.color]="sol.nivel_prioridad === 'Alta' ? '#FF0055' : sol.nivel_prioridad === 'Media' ? '#D97706' : '#10B981'"
+                    style="font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                    🤖 Diagnóstico IA</div>
+                  <p class="ai-summary"
+                    style="font-size: 0.9rem; color: var(--text-light); font-style: italic; margin: 0;">{{
+                    sol.evaluacion_ia || 'Calculando diagnóstico...' }}</p>
+
+                  <div *ngIf="sol.transcripcion_audio"
+                    style="margin-top: 8px; font-size: 0.85rem; color: var(--text-muted);">
+                    <strong>Descripción del Cliente:</strong> "{{ sol.transcripcion_audio }}"
+                  </div>
+
+                  <div *ngIf="sol.url_foto_evidencia" style="margin-top: 10px;">
+                    <img [src]="sol.url_foto_evidencia"
+                      style="max-width: 100%; max-height: 150px; border-radius: 8px; border: 1px solid #E2E8F0;"
+                      alt="Evidencia">
+                  </div>
+
+                  <div *ngIf="sol.url_audio_evidencia" style="margin-top: 10px;">
+                    <audio [src]="sol.url_audio_evidencia" controls style="width: 100%; height: 32px;"></audio>
+                  </div>
+                </div>
+              </div>
+              <!-- FLUJO DE COTIZACIÓN -->
+
+              <!-- Caso 1: Sin Cotizar -->
+              <div *ngIf="!sol.cotizacion" style="width: 100%;">
+                <!-- Botón de apertura -->
+                <div *ngIf="!sol.mostrarCotizar" style="display: flex; gap: 12px; width: 100%;">
+                  <button class="btn btn-primary"
+                    style="flex: 1; padding: 12px; background: #FF0055; border: none; color: white; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;"
+                    (click)="sol.mostrarCotizar = true; sol.cot_monto = 50.0; sol.cot_tiempo = 30;">
+                    <span>📋</span> Cotizar Servicio
+                  </button>
+                  <button class="btn btn-outline-danger"
+                    style="flex: 1; padding: 12px; background: rgba(239, 68, 68, 0.1); border: 1px solid #EF4444; color: #EF4444; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;"
+                    (click)="rechazarServicio(sol)">
+                    <span>❌</span> Rechazar
+                  </button>
+                </div>
+
+                <!-- Formulario de Cotización -->
+                <div *ngIf="sol.mostrarCotizar"
+                  style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); padding: 16px; border-radius: 12px; margin-top: 8px;">
+                  <h5 style="margin: 0 0 12px 0; color: var(--text-light); font-weight: 700;">Enviar Propuesta al
+                    Conductor</h5>
+
+                  <div style="display: flex; gap: 12px; margin-bottom: 12px;">
+                    <div style="flex: 1;">
+                      <label
+                        style="color: var(--text-muted); font-size: 0.8rem; display: block; margin-bottom: 4px; font-weight: 600;">Costo
+                        Bs.</label>
+                      <input type="number" [(ngModel)]="sol.cot_monto"
+                        style="width: 100%; padding: 10px; border-radius: 6px; background: var(--bg-base); color: var(--text-light); border: 1px solid var(--border-color); font-size: 0.9rem;">
+                    </div>
+                    <div style="flex: 1;">
+                      <label
+                        style="color: var(--text-muted); font-size: 0.8rem; display: block; margin-bottom: 4px; font-weight: 600;">Tiempo
+                        Est. (Min.)</label>
+                      <input type="number" [(ngModel)]="sol.cot_tiempo"
+                        style="width: 100%; padding: 10px; border-radius: 6px; background: var(--bg-base); color: var(--text-light); border: 1px solid var(--border-color); font-size: 0.9rem;">
+                    </div>
+                  </div>
+
+                  <div style="margin-bottom: 16px;">
+                    <label
+                      style="color: var(--text-muted); font-size: 0.8rem; display: block; margin-bottom: 4px; font-weight: 600;">Comentario
+                      / Detalles</label>
+                    <textarea [(ngModel)]="sol.cot_comentario" placeholder="Ej. Incluye repuestos y traslado..."
+                      style="width: 100%; padding: 10px; border-radius: 6px; background: var(--bg-base); color: var(--text-light); border: 1px solid var(--border-color); font-size: 0.9rem; min-height: 60px; font-family: inherit; resize: vertical;"></textarea>
+                  </div>
+
+                  <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-primary"
+                      style="flex: 1; padding: 10px; background: #10B981; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;"
+                      [disabled]="sol.procesandoCotizacion" (click)="enviarCotizacion(sol)">
+                      {{ sol.procesandoCotizacion ? 'Enviando...' : 'Enviar Propuesta' }}
+                    </button>
+                    <button class="btn btn-secondary"
+                      style="padding: 10px; background: rgba(255,255,255,0.05); color: var(--text-light); border: 1px solid var(--border-color); border-radius: 6px; font-weight: 600; cursor: pointer;"
+                      (click)="sol.mostrarCotizar = false;">
+                      Cancelar
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Caso 2: Cotización Enviada -->
+              <div *ngIf="sol.cotizacion" style="width: 100%;">
+
+                <!-- Subcaso A: Pendiente -->
+                <div *ngIf="sol.cotizacion.estado === 'Pendiente'"
+                  style="background: rgba(245, 158, 11, 0.08); border: 1px solid #F59E0B; padding: 16px; border-radius: 12px; text-align: center;">
+                  <div
+                    style="color: #F59E0B; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <span class="pulse"
+                      style="background: #F59E0B; width: 8px; height: 8px; display: inline-block; border-radius: 50%;"></span>
+                    Esperando aprobación del cliente...
+                  </div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);">
+                    Tu Propuesta: <strong>Bs. {{ sol.cotizacion.monto_estimado }}</strong> | {{
+                    sol.cotizacion.tiempo_estimado_minutos }} min
+                  </div>
+                </div>
+
+                <!-- Subcaso B: Rechazada -->
+                <div *ngIf="sol.cotizacion.estado === 'Rechazada'"
+                  style="background: rgba(239, 68, 68, 0.08); border: 1px solid #EF4444; padding: 16px; border-radius: 12px; text-align: center;">
+                  <div style="color: #EF4444; font-weight: 700; margin-bottom: 8px;">
+                    ❌ Cotización Rechazada por el Cliente
+                  </div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
+                    Propuesta declinada: Bs. {{ sol.cotizacion.monto_estimado }}
+                  </div>
+                  <button class="btn btn-outline"
+                    style="padding: 8px 16px; font-size: 0.85rem; border: 1px solid var(--border-color); color: var(--text-light); border-radius: 6px; cursor: pointer; background: transparent;"
+                    (click)="sol.cotizacion = null; sol.mostrarCotizar = true;">
+                    Volver a Cotizar
+                  </button>
+                </div>
+
+                <!-- Subcaso C: Aceptada (Listo para asignar técnico) -->
+                <div *ngIf="sol.cotizacion.estado === 'Aceptada'" style="width: 100%;">
+
+                  <!-- Badge informativo verde -->
+                  <div
+                    style="background: rgba(16, 185, 129, 0.08); border: 1px solid #10B981; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 16px;">
+                    <div style="color: #10B981; font-weight: 700;">
+                      🎉 ¡Cotización Aceptada por el Cliente!
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">
+                      Propuesta acordada: Bs. {{ sol.cotizacion.monto_estimado }} | {{
+                      sol.cotizacion.tiempo_estimado_minutos }} min
+                    </div>
+                  </div>
+
+                  <!-- Selector de Técnico -->
+                  <div style="margin-bottom: 12px; width: 100%;">
+                    <label
+                      style="color: var(--text-light); font-size: 0.85rem; display: block; margin-bottom: 6px; font-weight: 600;">Asignar
+                      Técnico para el Servicio:</label>
+                    <select [(ngModel)]="sol.id_tecnico_seleccionado"
+                      style="width: 100%; padding: 12px; border-radius: 8px; background: var(--bg-base); color: var(--text-light); border: 1px solid var(--border-color); font-size: 0.9rem;">
+                      <option [value]="null">-- Selección Automática --</option>
+                      <option *ngFor="let m of mecanicos" [value]="m.id_tecnico">
+                        🔧 {{ m.nombres }} {{ m.apellidos }} ({{ m.estado_operativo }})
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="request-actions" style="display: flex; gap: 12px;">
+                    <button class="btn btn-primary btn-sm"
+                      style="flex: 1; padding: 12px; background: #10B981; border: none; color: white; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;"
+                      [disabled]="sol.procesando" (click)="aceptarServicio(sol)">
+                      <span>🚀</span> {{ sol.procesando ? 'Procesando...' : 'Iniciar Servicio & Enviar Técnico' }}
+                    </button>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- Estado Vacío cuando no hay alertas reales -->
+            <div class="empty-state" *ngIf="solicitudes.length === 0"
+              style="text-align: center; padding: 64px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;">
+              <span style="font-size: 3rem;">📭</span>
+              <h4 style="color: #64748B; margin: 0; font-size: 1.1rem; font-weight: 600;">Sin emergencias activas</h4>
+              <p style="color: #94A3B8; margin: 0; font-size: 0.9rem; max-width: 320px; line-height: 1.5;">Las nuevas
+                solicitudes de auxilio vial en tiempo real que requieran tu atención aparecerán aquí.</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VISTA 3: GESTIÓN DE EQUIPO (MECÁNICOS) -->
+    <!-- ========================================== -->
+    <div class="dashboard-body animate-fade-in"
+      *ngIf="tallerData.estado_aprobacion === 'Aprobado' && currentTab === 'equipo'">
+
+      <div class="content-grid">
+        <!-- Tarjeta: Registrar Mecánico -->
+        <div class="card document-card glass-panel">
+          <div class="card-header">
+            <h3>Registrar Nuevo Mecánico</h3>
+            <span class="badge required">Acceso Móvil</span>
+          </div>
+          <p class="card-desc">Crea las credenciales para que tu técnico acceda a la app móvil.</p>
+
+          <div class="form-container">
+            <div *ngIf="mecanicoSuccess" class="locked-hint"
+              style="background: #ECFDF5; border-color: #10B981; color: #047857; margin-bottom: 16px;">
+              ✅ Mecánico registrado con éxito.
+            </div>
+            <div *ngIf="mecanicoError" class="locked-hint"
+              style="background: #FEF2F2; border-color: #EF4444; color: #991B1B; margin-bottom: 16px;">
+              ❌ {{ mecanicoError }}
+            </div>
+
+            <div class="form-group" style="margin-bottom: 12px;">
+              <label style="display:block; margin-bottom: 4px; font-weight: 500;">Nombres</label>
+              <input type="text" [(ngModel)]="nuevoMecanico.nombres" class="form-control"
+                style="width:100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;" placeholder="Ej. Juan">
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+              <label style="display:block; margin-bottom: 4px; font-weight: 500;">Apellidos</label>
+              <input type="text" [(ngModel)]="nuevoMecanico.apellidos" class="form-control"
+                style="width:100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;" placeholder="Ej. Perez">
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+              <label style="display:block; margin-bottom: 4px; font-weight: 500;">CI / DNI</label>
+              <input type="text" [(ngModel)]="nuevoMecanico.ci_tecnico" class="form-control"
+                style="width:100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;" placeholder="Ej. 1234567">
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+              <label style="display:block; margin-bottom: 4px; font-weight: 500;">Teléfono</label>
+              <input type="text" [(ngModel)]="nuevoMecanico.telefono_contacto" class="form-control"
+                style="width:100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;"
+                placeholder="Ej. 78945612">
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+              <label style="display:block; margin-bottom: 4px; font-weight: 500;">Correo / Usuario</label>
+              <input type="email" [(ngModel)]="nuevoMecanico.correo" class="form-control"
+                style="width:100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc; background: rgba(255,255,255,0.05); color: #94A3B8;"
+                placeholder="Se generará como: nombreapellido_siglas@asiscar.com" readonly>
+              <small style="color: #64748B; font-size: 0.8rem; margin-top: 4px; display: block;">* El sistema asignará
+                el usuario automáticamente con los lineamientos corporativos.</small>
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;">
+              <label style="display:block; margin-bottom: 4px; font-weight: 500;">Contraseña Temporal</label>
+              <input type="password" [(ngModel)]="nuevoMecanico.password" class="form-control"
+                style="width:100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;"
+                placeholder="Min. 6 caracteres">
+            </div>
+
+            <!-- Banners de Alerta -->
+            <div *ngIf="mecanicoSuccess"
+              style="background-color: rgba(16, 185, 129, 0.15); color: #10b981; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-weight: 600; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.9rem; text-align: center;">
+              ✅ ¡Técnico registrado con éxito!
+            </div>
+            <div *ngIf="mecanicoError"
+              style="background-color: rgba(239, 68, 68, 0.15); color: #ef4444; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-weight: 600; border: 1px solid rgba(239, 68, 68, 0.3); font-size: 0.9rem; text-align: center;">
+              ❌ {{ mecanicoError }}
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%;" (click)="registrarMecanico()"
+              [disabled]="creandoMecanico">
+              {{ creandoMecanico ? 'Registrando...' : 'Crear Cuenta de Técnico' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Tarjeta: Lista de Mecánicos -->
+        <div class="card requests-card glass-panel">
+          <div class="card-header">
+            <h3>Equipo Registrado</h3>
+            <span class="badge info">{{ mecanicos.length }} Activos</span>
+          </div>
+
+          <div class="requests-list" style="max-height: 400px; overflow-y: auto;">
+            <div class="request-item" *ngFor="let mec of mecanicos">
+              <div class="request-header">
+                <span class="distance">{{ mec.estado_operativo }}</span>
+                <span class="time" *ngIf="mec.en_turno"
+                  style="background: #ECFDF5; color: #10B981; padding: 2px 6px; border-radius: 4px;">En Turno</span>
+              </div>
+              <div class="request-body">
+                <h4 style="margin: 4px 0;">{{ mec.nombres }} {{ mec.apellidos }}</h4>
+                <p style="margin: 2px 0; font-size: 0.9rem;">CI: {{ mec.ci_tecnico }} | Tel: {{ mec.telefono_contacto }}
+                </p>
+                <p style="margin: 2px 0; font-size: 0.85rem; color: #0066FF;">Usuario: {{ mec.correo }}</p>
+              </div>
+              <div class="request-actions" style="margin-top: 10px;">
+                <button class="btn btn-outline btn-sm" style="width: 100%; font-size: 0.85rem; padding: 6px 12px;"
+                  (click)="resetPassword(mec)">
+                  🔑 Resetear Contraseña
+                </button>
+              </div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" *ngIf="mecanicos.length === 0" style="text-align: center; padding: 40px 20px;">
+              <span class="empty-icon" style="font-size: 2rem; display: block; margin-bottom: 12px;">👥</span>
+              <p style="color: #94A3B8;">No hay mecánicos registrados aún.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VISTA 5: HISTORIAL DE INCIDENTES -->
+    <!-- ========================================== -->
+    <div class="dashboard-body animate-fade-in"
+      *ngIf="tallerData.estado_aprobacion === 'Aprobado' && currentTab === 'incidentes'">
+      <div class="card glass-panel" style="padding: 24px; border: 1px solid rgba(255,255,255,0.1);">
+        <div class="card-header" style="margin-bottom: 16px;">
+          <h3 style="color: white; margin: 0;">Historial de Incidentes Atendidos</h3>
+        </div>
+        <p class="card-desc" style="color: #94A3B8; margin-bottom: 24px;">Consulta el estado de todos los incidentes
+          pasados vinculados a tu taller.</p>
+
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; color: #CBD5E1;">
+            <thead>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; color: #94A3B8;">
+                <th style="padding: 12px 8px;">ID</th>
+                <th style="padding: 12px 8px;">Cliente</th>
+                <th style="padding: 12px 8px;">Falla</th>
+                <th style="padding: 12px 8px;">Técnico</th>
+                <th style="padding: 12px 8px;">Estado</th>
+                <th style="padding: 12px 8px;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let t of trabajos"
+                style="border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem;"
+                [style.background]="t.estado === 'En Remolque al Taller' ? 'rgba(245, 158, 11, 0.06)' : 'transparent'">
+                <td style="padding: 16px 8px; font-weight: bold; color: #FF0055;">#INC-{{ t.id_incidente }}</td>
+                <td style="padding: 16px 8px;">{{ t.cliente }}</td>
+                <td style="padding: 16px 8px;">{{ t.problema }}</td>
+                <td style="padding: 16px 8px; color: #38BDF8;">{{ t.tecnico }}</td>
+                <td style="padding: 16px 8px;">
+                  <!-- Estado: Completado / Atendido -->
+                  <span *ngIf="t.estado === 'Completado' || t.estado === 'Atendido'"
+                    style="padding: 4px 10px; background: rgba(16, 185, 129, 0.1); border-radius: 6px; font-weight: 600; color: #10B981; border: 1px solid rgba(16, 185, 129, 0.2);">
+                    {{ t.estado }}
+                  </span>
+                  <!-- Estado: En Remolque al Taller -->
+                  <span *ngIf="t.estado === 'En Remolque al Taller'"
+                    style="padding: 4px 10px; background: rgba(245, 158, 11, 0.12); border-radius: 6px; font-weight: 600; color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.25); display: inline-flex; align-items: center; gap: 6px;">
+                    <span class="pulse"
+                      style="background: #F59E0B; width: 7px; height: 7px; display: inline-block; border-radius: 50%;"></span>
+                    🚛 En Remolque al Taller
+                  </span>
+                  <!-- Estado: En Remolque (a otro destino) -->
+                  <span *ngIf="t.estado === 'En Remolque'"
+                    style="padding: 4px 10px; background: rgba(56, 189, 248, 0.1); border-radius: 6px; font-weight: 600; color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.2); display: inline-flex; align-items: center; gap: 6px;">
+                    <span class="pulse"
+                      style="background: #38BDF8; width: 7px; height: 7px; display: inline-block; border-radius: 50%;"></span>
+                    🚛 En Remolque
+                  </span>
+                  <!-- Estado: Requiere Traslado -->
+                  <span *ngIf="t.estado === 'Requiere Traslado'"
+                    style="padding: 4px 10px; background: rgba(168, 85, 247, 0.1); border-radius: 6px; font-weight: 600; color: #A855F7; border: 1px solid rgba(168, 85, 247, 0.2);">
+                    ⚠️ Requiere Traslado
+                  </span>
+                  <!-- Estado: Ingresado a Taller -->
+                  <span *ngIf="t.estado === 'Ingresado a Taller'"
+                    style="padding: 4px 10px; background: rgba(16, 185, 129, 0.1); border-radius: 6px; font-weight: 600; color: #10B981; border: 1px solid rgba(16, 185, 129, 0.2);">
+                    ✅ Ingresado a Taller
+                  </span>
+                  <!-- Estado: Por Pagar -->
+                  <span *ngIf="t.estado === 'Por Pagar'"
+                    style="padding: 4px 10px; background: rgba(245, 158, 11, 0.1); border-radius: 6px; font-weight: 600; color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.2);">
+                    💳 Por Pagar
+                  </span>
+                  <!-- Estados normales restantes (Aceptado, En Camino, etc.) -->
+                  <span
+                    *ngIf="t.estado !== 'Completado' && t.estado !== 'Atendido' && t.estado !== 'En Remolque al Taller' && t.estado !== 'En Remolque' && t.estado !== 'Requiere Traslado' && t.estado !== 'Ingresado a Taller' && t.estado !== 'Por Pagar'"
+                    style="padding: 4px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; font-weight: 600; color: #F59E0B;">
+                    {{ t.estado }}
+                  </span>
+                </td>
+                <td style="padding: 16px 8px;">
+                  <div style="display: flex; gap: 8px; align-items: center; flex-wrap: nowrap;">
+                    <!-- Botón Ver Detalle (Para todos los incidentes) -->
+                    <button (click)="verDetalleIncidente(t)"
+                      style="padding: 8px 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15); color: #E2E8F0; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.8rem; transition: all 0.2s; white-space: nowrap;"
+                      onmouseover="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.borderColor='rgba(255, 255, 255, 0.35)';"
+                      onmouseout="this.style.background='rgba(255, 255, 255, 0.05)'; this.style.borderColor='rgba(255, 255, 255, 0.15)';">
+                      Ver Detalle
+                    </button>
+                    <!-- Botón: Confirmar Ingreso a Taller -->
+                    <button *ngIf="t.estado === 'En Remolque al Taller'" (click)="confirmarIngresoTaller(t)"
+                      style="padding: 8px 12px; background: linear-gradient(135deg, #10B981, #059669); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3); transition: all 0.2s; white-space: nowrap;"
+                      onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.4)';"
+                      onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(16, 185, 129, 0.3)';">
+                      📥 Confirmar Ingreso
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="trabajos.length === 0">
+                <td colspan="6" style="text-align: center; padding: 32px; color: #64748B;">No hay servicios registrados.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VISTA 6: HISTORIAL DE PAGOS / GANANCIAS -->
+    <!-- ========================================== -->
+    <div class="dashboard-body animate-fade-in"
+      *ngIf="tallerData.estado_aprobacion === 'Aprobado' && currentTab === 'pagos'">
+      <div class="card glass-panel" style="padding: 24px; border: 1px solid rgba(255,255,255,0.1);">
+        <div class="card-header" style="margin-bottom: 16px;">
+          <h3 style="color: white; margin: 0;">Finanzas & Ganancias</h3>
+        </div>
+        <p class="card-desc" style="color: #94A3B8; margin-bottom: 24px;">Visualiza los montos cobrados por asistencia
+          mecánica.</p>
+
+        <div class="stats-row" style="margin-bottom: 32px;">
+          <div class="stat-card"
+            style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2);">
+            <div class="stat-icon success">💵</div>
+            <div class="stat-info">
+              <span class="stat-label" style="color: #10B981;">Total Facturado</span>
+              <span class="stat-value" style="color: #10B981;">Bs. {{ stats.gananciasHoy }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; color: #CBD5E1;">
+            <thead>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; color: #94A3B8;">
+                <th style="padding: 12px 8px;">ID Incidente</th>
+                <th style="padding: 12px 8px;">Vehículo</th>
+                <th style="padding: 12px 8px;">Diagnóstico</th>
+                <th style="padding: 12px 8px;">Ingreso</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let t of trabajos"
+                style="border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem;">
+                <td style="padding: 16px 8px;">#INC-{{ t.id_incidente }}</td>
+                <td style="padding: 16px 8px;">{{ t.vehiculo }}</td>
+                <td style="padding: 16px 8px;">{{ t.problema }}</td>
+                <td style="padding: 16px 8px; font-weight: bold; color: #10B981;">Bs. {{ t.monto | number:'1.2-2' }}</td>
+              </tr>
+              <tr *ngIf="trabajos.length === 0">
+                <td colspan="4" style="text-align: center; padding: 32px; color: #64748B;">No hay cobros registrados.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VISTA 7: SERVICIOS DEL TALLER -->
+    <!-- ========================================== -->
+    <div class="dashboard-body animate-fade-in"
+      *ngIf="tallerData.estado_aprobacion === 'Aprobado' && currentTab === 'servicios'">
+      <div class="card" style="margin-bottom: 24px;">
+        <h3 style="margin-bottom: 12px; font-weight: 700;">Asociar Nuevo Servicio</h3>
+        <p class="card-desc" style="margin-bottom: 20px;">Vincula un servicio maestro a tu taller especificando precios
+          y
+          tiempos estimados.</p>
+
+        <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end;">
+          <div style="flex: 1; min-width: 200px;">
+            <label style="display: block; margin-bottom: 6px; font-weight: 600;">Servicio</label>
+            <select [(ngModel)]="nuevoServicioId"
+              style="width:100%; padding: 12px; border-radius: 8px; background: var(--bg-base); color: var(--text-light); border: 1px solid var(--border-color);">
+              <option [value]="null">-- Seleccionar Servicio --</option>
+              <option *ngFor="let s of serviciosDisponibles" [value]="s.id_servicio"
+                style="color: var(--text-light); background: var(--bg-surface);">{{
+                s.nombre_servicio }}</option>
+            </select>
+          </div>
+          <div style="width: 150px;">
+            <label style="display: block; margin-bottom: 6px; font-weight: 600;">Precio (Bs.)</label>
+            <input type="number" [(ngModel)]="nuevoServicioPrecio"
+              style="width:100%; padding: 12px; border-radius: 8px; background: var(--bg-base); color: var(--text-light); border: 1px solid var(--border-color);">
+          </div>
+          <div style="width: 150px;">
+            <label style="display: block; margin-bottom: 6px; font-weight: 600;">Tiempo (Min.)</label>
+            <input type="number" [(ngModel)]="nuevoServicioTiempo"
+              style="width:100%; padding: 12px; border-radius: 8px; background: var(--bg-base); color: var(--text-light); border: 1px solid var(--border-color);">
+          </div>
+          <button class="btn" (click)="vincularServicio()"
+            style="padding: 12px 24px; background: #FF0055; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: background 0.2s;">Vincular</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom: 16px; font-weight: 700;">Mis Servicios Ofrecidos</h3>
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; color: var(--text-light);">
+            <thead>
+              <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600;">
+                <th style="padding: 12px 8px; text-align: left;">Servicio</th>
+                <th style="padding: 12px 8px; text-align: right;">Precio</th>
+                <th style="padding: 12px 8px; text-align: right;">Tiempo Est.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of serviciosAsociados" style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 16px 8px; color: var(--text-light);">{{ s.nombre_servicio }}</td>
+                <td style="padding: 16px 8px; text-align: right; font-weight: bold; color: #FF0055;">Bs. {{
+                  s.precio_especifico_taller }}</td>
+                <td style="padding: 16px 8px; text-align: right; color: var(--text-muted);">{{ s.tiempo_estimado_minutos
+                  }} min
+                </td>
+              </tr>
+              <tr *ngIf="serviciosAsociados.length === 0">
+                <td colspan="3" style="text-align: center; padding: 32px; color: var(--text-muted);">No has configurado
+                  servicios.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VISTA 8: HABILIDADES DE TÉCNICOS -->
+    <!-- ========================================== -->
+    <div class="dashboard-body animate-fade-in"
+      *ngIf="tallerData.estado_aprobacion === 'Aprobado' && currentTab === 'habilidades'">
+      <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+        <!-- Lista de Técnicos -->
+        <div class="card" style="flex: 1; min-width: 300px;">
+          <h3 style="margin-bottom: 16px; font-weight: 700;">Selecciona un Técnico</h3>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div *ngFor="let mec of mecanicos" (click)="seleccionarTecnicoParaEsp(mec)"
+              [class.selected]="tecnicoSeleccionadoParaEsp?.id_tecnico === mec.id_tecnico" class="tech-list-item">
+              <strong class="tech-name">{{ mec.nombres }} {{ mec.apellidos }}</strong>
+              <div class="tech-phone">📞 {{ mec.telefono_contacto }}</div>
+            </div>
+            <div *ngIf="mecanicos.length === 0"
+              style="color: var(--text-muted); font-style: italic; text-align: center; padding: 20px;">
+              No hay técnicos registrados.
+            </div>
+          </div>
+        </div>
+
+        <!-- Habilidades del Técnico -->
+        <div class="card" style="flex: 1; min-width: 300px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h3 style="font-weight: 700; margin: 0;">Asignar Habilidades</h3>
+            <button *ngIf="tecnicoSeleccionadoParaEsp" (click)="editandoEspecialidades = !editandoEspecialidades"
+              style="background: #FF0055; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.9rem;">
+              {{ editandoEspecialidades ? '🔒 Finalizar Edición' : '✏️ Editar Habilidades' }}
+            </button>
+          </div>
+
+          <p style="color: var(--text-light); margin-bottom: 24px;" *ngIf="tecnicoSeleccionadoParaEsp">Gestionando
+            habilidades
+            para: <span style="color: #FF0055; font-weight: bold;">{{ tecnicoSeleccionadoParaEsp.nombres }}</span></p>
+          <p style="color: var(--text-muted); padding: 32px 0; text-align: center;" *ngIf="!tecnicoSeleccionadoParaEsp">
+            👈 Elige
+            un técnico a la izquierda.</p>
+
+          <div *ngIf="tecnicoSeleccionadoParaEsp">
+            <!-- Solo visible en modo edición -->
+            <div *ngIf="editandoEspecialidades"
+              style="margin-bottom: 32px; background: var(--glass-bg); padding: 16px; border-radius: 8px; border: 1px dashed #FF0055;">
+              <h4 style="color: #FF0055; margin-bottom: 12px; font-weight: 600; margin-top: 0;">Añadir Destreza (Modo
+                Edición Activo)</h4>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button *ngFor="let esp of especialidadesDisponibles" class="btn"
+                  style="color: #FF0055; border: 1px solid #FF0055; background: var(--bg-surface); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                  (click)="vincularEspecialidad(esp.id_especialidad)">
+                  ➕ {{ esp.nombre_especialidad }}
+                </button>
+              </div>
+            </div>
+
+            <h4
+              style="margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; font-weight: 600;">
+              Habilidades Actuales</h4>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <span *ngFor="let esp of tecnicoEspecialidades"
+                style="background: #ECFDF5; color: #10B981; padding: 8px 16px; border-radius: 20px; font-weight: 600; font-size: 0.9rem; border: 1px solid #A7F3D0;">
+                🛡️ {{ esp.nombre_especialidad }}
+              </span>
+              <div *ngIf="tecnicoEspecialidades.length === 0" style="color: var(--text-muted); font-style: italic;">No
+                tiene
+                habilidades registradas.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VISTA: MÉTRICAS Y REPORTES (KPIs) -->
+    <!-- ========================================== -->
+    <div class="dashboard-body animate-fade-in"
+      *ngIf="tallerData.estado_aprobacion === 'Aprobado' && currentTab === 'kpis'">
+      
+      <!-- CABECERA INSTITUCIONAL EXCLUSIVA PARA IMPRESIÓN (PDF) -->
+      <div class="print-only-header">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; padding-bottom: 12px; border-bottom: 2px solid #1e293b;">
+          <div>
+            <h1 style="font-size: 1.6rem; font-weight: 800; margin: 0; letter-spacing: -0.5px;">ASISCAR</h1>
+            <span style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px;">Sistema de Auxilio Vial</span>
+          </div>
+          <div style="text-align: right;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0;">{{ tallerData.razon_social }}</h3>
+            <p style="font-size: 0.8rem; margin: 2px 0 0 0;">NIT: {{ tallerData.nit }} &mdash; Tenant: {{ tallerData.id_tenant }}</p>
+            <p style="font-size: 0.75rem; margin: 2px 0 0 0;">Fecha de emisión: {{ currentDate | date:'dd/MM/yyyy HH:mm' }}</p>
+          </div>
+        </div>
+        <h2 style="font-size: 1.15rem; font-weight: 700; margin: 14px 0 0 0; text-transform: uppercase; letter-spacing: 0.5px;">Informe Ejecutivo de Operaciones</h2>
+      </div>
+
+      <div class="card glass-panel kpi-main-panel" style="padding: 24px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; width: 100%;">
+          <div>
+            <h3 style="color: white; margin: 0; font-size: 1.5rem; font-weight: 700;">Métricas y KPIs de Taller</h3>
+            <p style="color: #94A3B8; margin: 4px 0 0 0; font-size: 0.9rem;">Análisis de incidentes, ingresos, geolocalización y eficiencia operativa.</p>
+          </div>
+          <div class="no-print" style="display: flex; gap: 12px; align-items: center;">
+            <button (click)="exportarPDF()" class="btn btn-outline" style="padding: 10px 16px; font-weight: 600; font-size: 0.9rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s;"
+              onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='rgba(255,255,255,0.4)';"
+              onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.2)';">
+              Exportar PDF
+            </button>
+            <button (click)="exportarExcel()" class="btn btn-outline" style="padding: 10px 16px; font-weight: 600; font-size: 0.9rem; border: 1px solid rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.1); color: #10B981; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s;"
+              onmouseover="this.style.background='rgba(16, 185, 129, 0.2)'; this.style.borderColor='rgba(16, 185, 129, 0.6)';"
+              onmouseout="this.style.background='rgba(16, 185, 129, 0.1)'; this.style.borderColor='rgba(16, 185, 129, 0.4)';">
+              Exportar Excel
+            </button>
+          </div>
+        </div>
+
+        <!-- Fila de Filtros -->
+        <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; background: rgba(0,0,0,0.2); padding: 16px; border-radius: 12px; margin-bottom: 24px;">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Tipo de Filtro</label>
+            <select [(ngModel)]="filtroTipo" (change)="loadKpiData()" style="padding: 10px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem; cursor: pointer;">
+              <option value="hoy">Hoy</option>
+              <option value="dia_especifico">Día Específico</option>
+              <option value="mes">Mensual</option>
+              <option value="rango_meses">Rango de Meses</option>
+              <option value="anio">Anual</option>
+              <option value="rango_fechas">Rango de Fechas Personalizado</option>
+            </select>
+          </div>
+
+          <!-- Día Específico -->
+          <div *ngIf="filtroTipo === 'dia_especifico'" style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Fecha</label>
+            <input type="date" [(ngModel)]="filtroFecha" (change)="loadKpiData()" style="padding: 10px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem;">
+          </div>
+
+          <!-- Mes -->
+          <div *ngIf="filtroTipo === 'mes'" style="display: flex; gap: 12px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Mes</label>
+              <select [(ngModel)]="filtroMes" (change)="loadKpiData()" style="padding: 10px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem; cursor: pointer;">
+                <option *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="m">{{ m }}</option>
+              </select>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Año</label>
+              <input type="number" [(ngModel)]="filtroAnio" (change)="loadKpiData()" style="padding: 10px; width: 100px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem;">
+            </div>
+          </div>
+
+          <!-- Rango de Meses -->
+          <div *ngIf="filtroTipo === 'rango_meses'" style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Mes Inicio</label>
+              <select [(ngModel)]="filtroMesInicio" (change)="loadKpiData()" style="padding: 10px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem; cursor: pointer;">
+                <option *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="m">{{ m }}</option>
+              </select>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Mes Fin</label>
+              <select [(ngModel)]="filtroMesFin" (change)="loadKpiData()" style="padding: 10px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem; cursor: pointer;">
+                <option *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="m">{{ m }}</option>
+              </select>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Año</label>
+              <input type="number" [(ngModel)]="filtroAnio" (change)="loadKpiData()" style="padding: 10px; width: 100px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem;">
+            </div>
+          </div>
+
+          <!-- Año -->
+          <div *ngIf="filtroTipo === 'anio'" style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Año</label>
+            <input type="number" [(ngModel)]="filtroAnio" (change)="loadKpiData()" style="padding: 10px; width: 100px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem;">
+          </div>
+
+          <!-- Rango de Fechas Personalizado -->
+          <div *ngIf="filtroTipo === 'rango_fechas'" style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Desde</label>
+              <input type="date" [(ngModel)]="filtroFechaInicio" (change)="loadKpiData()" style="padding: 10px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem;">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Hasta</label>
+              <input type="date" [(ngModel)]="filtroFechaFin" (change)="loadKpiData()" style="padding: 10px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem;">
+            </div>
+          </div>
+
+          <button (click)="loadKpiData()" class="btn btn-primary" style="padding: 10px 20px; font-weight: 700; height: 42px; background: #FF0055; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            <span>🔄</span> Refrescar
+          </button>
+        </div>
+
+        <!-- Fila de Tarjetas de KPIs (Cards) -->
+        <div class="stats-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 32px;">
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Ingresos Totales</span>
+              <span class="stat-value">Bs. {{ kpiResumen.ingresos_totales | number:'1.2-2' }}</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Incidentes Asignados</span>
+              <span class="stat-value">{{ kpiResumen.total_incidentes }}</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Completados</span>
+              <span class="stat-value">{{ kpiResumen.incidentes_completados }}</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Tasa de Éxito</span>
+              <span class="stat-value">{{ kpiResumen.tasa_exito }}%</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <span class="stat-label">Casos Cancelados</span>
+              <span class="stat-value">{{ kpiResumen.incidentes_cancelados }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección de Gráficos (Dashboard) -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; margin-bottom: 32px;">
+          <!-- Tendencia Temporal -->
+          <div class="card" style="padding: 20px; min-height: 320px; display: flex; flex-direction: column; background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.05);">
+            <h4 style="color: white; margin-top: 0; margin-bottom: 16px; font-weight: 700;">Tendencia de Ingresos e Incidentes</h4>
+            <div style="flex: 1; position: relative; height: 250px;">
+              <canvas id="chartTendencia"></canvas>
+            </div>
+          </div>
+
+          <!-- Productividad de Técnicos -->
+          <div class="card" style="padding: 20px; min-height: 320px; display: flex; flex-direction: column; background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.05);">
+            <h4 style="color: white; margin-top: 0; margin-bottom: 16px; font-weight: 700;">Trabajos por Técnico</h4>
+            <div style="flex: 1; position: relative; height: 250px;">
+              <canvas id="chartTecnicos"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 32px;">
+          <!-- Tipo de Fallas -->
+          <div class="card" style="padding: 20px; min-height: 280px; display: flex; flex-direction: column; background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.05);">
+            <h4 style="color: white; margin-top: 0; margin-bottom: 16px; font-weight: 700;">Tipos de Falla Comunes</h4>
+            <div style="flex: 1; position: relative; height: 200px;">
+              <canvas id="chartProblemas"></canvas>
+            </div>
+          </div>
+
+          <!-- Estado de los Casos -->
+          <div class="card" style="padding: 20px; min-height: 280px; display: flex; flex-direction: column; background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.05);">
+            <h4 style="color: white; margin-top: 0; margin-bottom: 16px; font-weight: 700;">Distribución de Estados</h4>
+            <div style="flex: 1; position: relative; height: 200px;">
+              <canvas id="chartEstados"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leaderboard Técnico de Alto Rendimiento -->
+        <div class="card" style="padding: 20px; margin-bottom: 32px; background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.05);">
+          <h4 style="color: white; margin-top: 0; margin-bottom: 16px; font-weight: 700;">Rendimiento de Técnicos</h4>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; color: #CBD5E1;">
+              <thead>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; color: #94A3B8;">
+                  <th style="padding: 12px 8px;">Mecánico</th>
+                  <th style="padding: 12px 8px; text-align: center;">Trabajos Completados</th>
+                  <th style="padding: 12px 8px; text-align: center;">Calificación Promedio</th>
+                  <th style="padding: 12px 8px; text-align: right;">Rendimiento</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let tech of kpiTecnicos; let idx = index" style="border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem;">
+                  <td style="padding: 12px 8px; font-weight: 600; color: white;">
+                    <span style="margin-right: 8px; font-weight: 700; color: #64748B;">{{ idx + 1 }}.</span>
+                    {{ tech.nombre }}
+                  </td>
+                  <td style="padding: 12px 8px; text-align: center; font-weight: bold; color: #0066FF;">{{ tech.completados }}</td>
+                  <td style="padding: 12px 8px; text-align: center; font-weight: bold; color: #F59E0B;">{{ tech.calificacion }}</td>
+                  <td style="padding: 12px 8px; text-align: right;">
+                    <div style="width: 100px; background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; display: inline-block; overflow: hidden;">
+                      <div [style.width.%]="tech.completados * 10" style="background: #10B981; height: 100%; border-radius: 4px;"></div>
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf="kpiTecnicos.length === 0">
+                  <td colspan="4" style="text-align: center; padding: 24px; color: #64748B;">No se registraron trabajos completados por técnicos en este periodo.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Mapa de Calor (Incidencias por Zona) -->
+        <div class="card" style="padding: 20px; background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.05);">
+          <h4 style="color: white; margin-top: 0; margin-bottom: 8px; font-weight: 700;">Mapa de Calor — Densidad Geográfica de Incidencias</h4>
+          <p style="color: #94A3B8; font-size: 0.9rem; margin-top: 0; margin-bottom: 20px;">Las regiones en rojo brillante indican la mayor concentración de solicitudes de auxilio vehicular.</p>
+          <div id="kpiMap" style="height: 450px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; position: relative;"></div>
+        </div>
+
+        <!-- Análisis Automático de Operaciones -->
+        <div class="card analysis-card" style="padding: 24px; margin-top: 32px; background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;">
+          <h4 style="color: white; margin-top: 0; margin-bottom: 4px; font-weight: 700; font-size: 1.1rem;">Resumen Ejecutivo</h4>
+          <p style="color: #64748B; font-size: 0.8rem; margin: 0 0 16px 0;">Análisis generado con base en los datos operativos del periodo seleccionado.</p>
+          <div style="color: #CBD5E1; font-size: 0.93rem; line-height: 1.8;" [innerHTML]="analisisTexto"></div>
+          <div style="margin-top: 16px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); text-align: right;">
+            <span style="color: #475569; font-size: 0.78rem;">Asiscar — {{ currentDate | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VISTA 9: CONFIGURACIÓN / PERFIL -->
+    <!-- ========================================== -->
+    <div class="dashboard-body animate-fade-in"
+      *ngIf="tallerData.estado_aprobacion === 'Aprobado' && currentTab === 'perfil'">
+      <div class="card glass-panel"
+        style="max-width: 600px; margin: 0 auto; padding: 32px; border: 1px solid rgba(255,255,255,0.1);">
+        <h3 style="color: white; margin-bottom: 8px;">Configuración del Taller</h3>
+        <p style="color: #94A3B8; margin-bottom: 24px;">Modifica los canales de soporte e información bancaria.</p>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div>
+            <label style="color: #94A3B8; display: block; margin-bottom: 6px;">Teléfono Corporativo</label>
+            <input type="text" [(ngModel)]="perfilEdit.telefono_taller"
+              style="width:100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2);"
+              placeholder="Ej. 78945612">
+          </div>
+          <div>
+            <label style="color: #94A3B8; display: block; margin-bottom: 6px;">Número de Cuenta Bancaria</label>
+            <input type="text" [(ngModel)]="perfilEdit.cuenta_bancaria"
+              style="width:100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2);"
+              placeholder="Ej. 123-456789-011">
+          </div>
+
+          <div>
+            <label style="color: #94A3B8; display: block; margin-bottom: 6px;">Sonido de Alertas</label>
+            <select [ngModel]="tipoSonido" (ngModelChange)="setTipoSonido($event)"
+              style="width:100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; outline: none;">
+              <option value="telefono" style="background: #1E293B; color: white;">📱 Teléfono (Suave)</option>
+              <option value="campana" style="background: #1E293B; color: white;">🔔 Campana (Chime)</option>
+              <option value="tritono" style="background: #1E293B; color: white;">🎵 Tri-tono</option>
+              <option value="silencio" style="background: #1E293B; color: white;">🔇 Silenciar</option>
+            </select>
+          </div>
+
+          <div style="display: flex; gap: 16px;">
+            <div style="flex: 1;">
+              <label style="color: #94A3B8; display: block; margin-bottom: 6px;">Horario Apertura</label>
+              <input type="time" [(ngModel)]="perfilEdit.horario_apertura"
+                style="width:100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2);">
+            </div>
+            <div style="flex: 1;">
+              <label style="color: #94A3B8; display: block; margin-bottom: 6px;">Horario Cierre</label>
+              <input type="time" [(ngModel)]="perfilEdit.horario_cierre"
+                style="width:100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2);">
+            </div>
+          </div>
+
+          <button class="btn btn-primary" (click)="guardarPerfil()"
+            style="margin-top: 12px; padding: 12px; font-size: 1rem; font-weight: 600;">Guardar Cambios</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VISTA: GESTIÓN DE ÓRDENES DE TRABAJO -->
+    <!-- ========================================== -->
+    <div class="dashboard-body animate-fade-in"
+      *ngIf="tallerData.estado_aprobacion === 'Aprobado' && currentTab === 'ordenes'">
+      
+      <div class="card glass-panel" style="padding: 24px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+          <div>
+            <h3 style="color: white; margin: 0; font-size: 1.5rem; font-weight: 700;">Órdenes de Trabajo en Taller</h3>
+            <p style="color: #94A3B8; margin: 4px 0 0 0; font-size: 0.9rem;">Gestiona las reparaciones físicas de vehículos, presupuestos y estados de trabajo.</p>
+          </div>
+          <button class="btn btn-primary" (click)="abrirCrearOrden()" style="padding: 12px 20px; font-weight: 700; background: #FF0055; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            <span>📥</span> Nueva Orden de Trabajo
+          </button>
+        </div>
+
+        <!-- Filtros de Estado -->
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px;">
+          <button *ngFor="let filter of ['Todas', 'Diagnóstico', 'Presupuestado', 'En Reparación', 'Listo para Entrega', 'Completado']"
+            (click)="orderFilter = filter"
+            [style.background]="orderFilter === filter ? '#FF0055' : 'rgba(255,255,255,0.05)'"
+            [style.color]="orderFilter === filter ? 'white' : '#CBD5E1'"
+            style="padding: 8px 16px; border: none; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 0.85rem;">
+            {{ filter }}
+          </button>
+        </div>
+
+        <!-- Tabla de Órdenes -->
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; color: #CBD5E1;">
+            <thead>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; color: #94A3B8;">
+                <th style="padding: 12px 8px;">ID Orden</th>
+                <th style="padding: 12px 8px;">Cliente ID</th>
+                <th style="padding: 12px 8px;">Vehículo ID</th>
+                <th style="padding: 12px 8px;">Estado</th>
+                <th style="padding: 12px 8px;">Ingreso</th>
+                <th style="padding: 12px 8px; text-align: right;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ord of filtrarOrdenes()" style="border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)';" onmouseout="this.style.background='transparent';">
+                <td style="padding: 16px 8px; font-weight: bold; color: #FF0055;">#ORD-{{ ord.id_orden }}</td>
+                <td style="padding: 16px 8px;">
+                  <div style="font-weight: 600; color: white;">Cliente ID: {{ ord.id_cliente }}</div>
+                </td>
+                <td style="padding: 16px 8px;">
+                  <div style="font-weight: 600; color: white;">Vehículo ID: {{ ord.id_vehiculo }}</div>
+                </td>
+                <td style="padding: 16px 8px;">
+                  <span [style.background]="ord.estado_trabajo === 'Diagnóstico' ? 'rgba(56, 189, 248, 0.15)' : ord.estado_trabajo === 'Presupuestado' ? 'rgba(245, 158, 11, 0.15)' : ord.estado_trabajo === 'En Reparación' ? 'rgba(168, 85, 247, 0.15)' : ord.estado_trabajo === 'Listo para Entrega' ? 'rgba(236, 72, 153, 0.15)' : 'rgba(16, 185, 129, 0.15)'"
+                        [style.color]="ord.estado_trabajo === 'Diagnóstico' ? '#38BDF8' : ord.estado_trabajo === 'Presupuestado' ? '#F59E0B' : ord.estado_trabajo === 'En Reparación' ? '#A855F7' : ord.estado_trabajo === 'Listo para Entrega' ? '#EC4899' : '#10B981'"
+                        style="padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.05);">
+                    {{ ord.estado_trabajo }}
+                  </span>
+                </td>
+                <td style="padding: 16px 8px; font-size: 0.85rem; color: #94A3B8;">{{ ord.fecha_ingreso | date:'short' }}</td>
+                <td style="padding: 16px 8px; text-align: right;">
+                  <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                    <button (click)="verDetalleOrden(ord)" class="btn" style="padding: 6px 12px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; background: transparent; color: white; cursor: pointer;">
+                      🔎 Ver Ficha
+                    </button>
+                    <button *ngIf="ord.estado_trabajo === 'Diagnóstico'" (click)="abrirCrearPresupuesto(ord)" class="btn" style="padding: 6px 12px; font-size: 0.8rem; font-weight: 600; background: #10B981; border: none; border-radius: 6px; color: white; cursor: pointer;">
+                      📋 Cotizar
+                    </button>
+                    <button *ngIf="ord.estado_trabajo !== 'Completado' && ord.estado_trabajo !== 'Diagnóstico' && ord.estado_trabajo !== 'Presupuestado'" (click)="abrirActualizarEstado(ord)" class="btn" style="padding: 6px 12px; font-size: 0.8rem; font-weight: 600; background: #FF0055; border: none; border-radius: 6px; color: white; cursor: pointer;">
+                      🔄 Estado
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="filtrarOrdenes().length === 0">
+                <td colspan="6" style="text-align: center; padding: 48px; color: #64748B;">
+                  <span style="font-size: 2.5rem; display: block; margin-bottom: 12px;">📋</span>
+                  No se encontraron órdenes de trabajo en este estado.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL: CREAR ORDEN DE TRABAJO -->
+  <div class="modal-backdrop" *ngIf="showCreateOrderModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 2000;">
+    <div class="modal-card glass-panel" style="width: 100%; max-width: 600px; background: #1E293B; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+      <h3 style="color: white; margin-top: 0; margin-bottom: 8px; font-size: 1.4rem; font-weight: 700;">Nueva Orden de Trabajo Física</h3>
+      <p style="color: #94A3B8; margin-bottom: 24px; font-size: 0.9rem;">Registre el ingreso de un vehículo al taller después de ser remolcado.</p>
+
+      <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;">
+        <div>
+          <label style="color: #CBD5E1; display: block; margin-bottom: 6px; font-weight: 600;">Seleccionar Vehículo Ingresado</label>
+          <select [(ngModel)]="newOrderIncidenteId" style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.4); color: white; border: 1px solid rgba(255,255,255,0.15); outline: none;">
+            <option [value]="null">-- Seleccione el Incidente/Vehículo Arribado --</option>
+            <option *ngFor="let inc of activeIncidentes" [value]="inc.id_incidente">
+              🚗 Placa/Vehículo: {{ inc.vehiculo }} | Cliente: {{ inc.cliente }} (Motivo: {{ inc.problema }})
+            </option>
+          </select>
+          <small style="color: #94A3B8; margin-top: 4px; display: block;">Solo se muestran incidentes con estado "Ingresado a Taller" que no tienen orden aún.</small>
+        </div>
+
+        <div>
+          <label style="color: #CBD5E1; display: block; margin-bottom: 6px; font-weight: 600;">Estado de Recepción (Inventario/Fallas Iniciales)</label>
+          <textarea [(ngModel)]="newOrderEstadoRecepcion" placeholder="Ej. El vehículo ingresa en grúa con abolladura en guardabarros izquierdo y sin llave..." style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.4); color: white; border: 1px solid rgba(255,255,255,0.15); min-height: 80px; resize: vertical; font-family: inherit;"></textarea>
+        </div>
+
+        <div>
+          <label style="color: #CBD5E1; display: block; margin-bottom: 6px; font-weight: 600;">Fecha Compromiso de Entrega (Estimado)</label>
+          <input type="datetime-local" [(ngModel)]="newOrderFechaCompromiso" style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.4); color: white; border: 1px solid rgba(255,255,255,0.15); outline: none;">
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button (click)="showCreateOrderModal = false" style="padding: 10px 18px; border-radius: 8px; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; font-weight: 600; cursor: pointer;">
+          Cancelar
+        </button>
+        <button (click)="registrarOrdenTrabajo()" style="padding: 10px 18px; border-radius: 8px; background: #FF0055; border: none; color: white; font-weight: 700; cursor: pointer;">
+          Iniciar Orden
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CREAR PRESUPUESTO COTIZACIÓN -->
+  <div class="modal-backdrop" *ngIf="showCreatePresupuestoModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 2000;">
+    <div class="modal-card glass-panel" style="width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; background: #1E293B; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+      <h3 style="color: white; margin-top: 0; margin-bottom: 8px; font-size: 1.4rem; font-weight: 700;">Elaborar Presupuesto de Reparación</h3>
+      <p style="color: #94A3B8; margin-bottom: 24px; font-size: 0.9rem;">Agrupe el presupuesto por fallas/servicios e indique si son críticos/obligatorios.</p>
+
+      <div style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 24px;">
+        <div>
+          <label style="color: #CBD5E1; display: block; margin-bottom: 6px; font-weight: 600;">Comentario / Descripción General del Diagnóstico</label>
+          <textarea [(ngModel)]="newBudgetDesc" placeholder="Ej. Se detecta falla eléctrica en alternador y desgaste severo en pastillas de freno..." style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.4); color: white; border: 1px solid rgba(255,255,255,0.15); min-height: 60px; resize: vertical; font-family: inherit;"></textarea>
+        </div>
+
+        <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h4 style="color: white; margin: 0; font-size: 1.1rem; font-weight: 700;">Grupos de Reparación / Fallas</h4>
+            <button (click)="agregarGrupoPresupuesto()" style="padding: 6px 12px; background: #FF0055; border: none; border-radius: 6px; color: white; font-weight: 600; font-size: 0.8rem; cursor: pointer;">
+              ➕ Agregar Grupo
+            </button>
+          </div>
+
+          <!-- Listado de Grupos -->
+          <div *ngFor="let group of newBudgetGroups; let gIdx = index" style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 12px;">
+              <div style="display: flex; gap: 16px; align-items: center; flex: 1; min-width: 250px;">
+                <input type="text" [(ngModel)]="group.nombre" placeholder="Nombre de la Falla/Grupo (ej: Frenos)" style="flex: 1; padding: 8px 12px; border-radius: 6px; background: rgba(0,0,0,0.4); color: white; border: 1px solid rgba(255,255,255,0.15); outline: none; font-weight: 600;">
+                
+                <label style="display: flex; align-items: center; gap: 6px; color: white; font-size: 0.85rem; cursor: pointer; user-select: none;">
+                  <input type="checkbox" [(ngModel)]="group.es_critico">
+                  ⚠️ ¿Es Crítico/Obligatorio?
+                </label>
+              </div>
+              <button (click)="eliminarGrupoPresupuesto(gIdx)" style="background: rgba(239, 68, 68, 0.1); color: #EF4444; border: 1px solid #EF4444; padding: 6px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer;">
+                Eliminar Grupo
+              </button>
+            </div>
+
+            <!-- Items del Grupo -->
+            <table style="width: 100%; border-collapse: collapse; text-align: left; margin-bottom: 12px;">
+              <thead>
+                <tr style="font-size: 0.8rem; color: #94A3B8; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                  <th style="padding: 4px;">Descripción</th>
+                  <th style="padding: 4px; width: 130px;">Tipo</th>
+                  <th style="padding: 4px; width: 130px;">Categoría</th>
+                  <th style="padding: 4px; width: 70px;">Cant.</th>
+                  <th style="padding: 4px; width: 100px;">P. Unit Bs.</th>
+                  <th style="padding: 4px; width: 50px;">Subt.</th>
+                  <th style="padding: 4px; width: 40px; text-align: right;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of group.items; let iIdx = index" style="border-bottom: 1px solid rgba(255,255,255,0.03);">
+                  <td style="padding: 6px 4px;">
+                    <input type="text" [(ngModel)]="item.descripcion" placeholder="Alternador, Pastillas, etc." style="width: 100%; padding: 6px; border-radius: 4px; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.1);">
+                  </td>
+                  <td style="padding: 6px 4px;">
+                    <select [(ngModel)]="item.tipo_item" style="width: 100%; padding: 6px; border-radius: 4px; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.1);">
+                      <option value="Repuesto">Repuesto</option>
+                      <option value="Mano de Obra">Mano de Obra</option>
+                    </select>
+                  </td>
+                  <td style="padding: 6px 4px;">
+                    <select [(ngModel)]="item.categoria" style="width: 100%; padding: 6px; border-radius: 4px; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.1);">
+                      <option value="Motor">Motor</option>
+                      <option value="Eléctrico">Eléctrico</option>
+                      <option value="Frenos">Frenos</option>
+                      <option value="Suspensión">Suspensión</option>
+                      <option value="Chapería">Chapería</option>
+                      <option value="Pintura">Pintura</option>
+                      <option value="Mecánica">Mecánica</option>
+                    </select>
+                  </td>
+                  <td style="padding: 6px 4px;">
+                    <input type="number" [(ngModel)]="item.cantidad" style="width: 100%; padding: 6px; border-radius: 4px; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.1);">
+                  </td>
+                  <td style="padding: 6px 4px;">
+                    <input type="number" [(ngModel)]="item.precio_unitario" style="width: 100%; padding: 6px; border-radius: 4px; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.1);">
+                  </td>
+                  <td style="padding: 6px 4px; font-weight: bold; color: #FF0055;">
+                    Bs. {{ item.cantidad * item.precio_unitario }}
+                  </td>
+                  <td style="padding: 6px 4px; text-align: right;">
+                    <button (click)="eliminarItemDeGrupo(gIdx, iIdx)" style="background: transparent; border: none; color: #EF4444; font-size: 1.1rem; cursor: pointer;">🗑️</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <button (click)="agregarItemAGrupo(gIdx)" style="background: transparent; color: #10B981; border: 1px dashed #10B981; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: 600;">
+              ➕ Agregar Ítem a este Grupo
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button (click)="showCreatePresupuestoModal = false" style="padding: 10px 18px; border-radius: 8px; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; font-weight: 600; cursor: pointer;">
+          Cancelar
+        </button>
+        <button (click)="enviarPresupuesto()" style="padding: 10px 18px; border-radius: 8px; background: #FF0055; border: none; color: white; font-weight: 700; cursor: pointer;">
+          Enviar Presupuesto
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: FICHA DETALLE DE ORDEN & PRESUPUESTO APROBADO & TIMELINE -->
+  <div class="modal-backdrop" *ngIf="showOrderDetailModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 2000;">
+    <div class="modal-card glass-panel" style="width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; background: #1E293B; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); color: white;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px;">
+        <div>
+          <h3 style="color: white; margin: 0; font-size: 1.4rem; font-weight: 700;">Ficha de Orden #ORD-{{ selectedOrder?.id_orden }}</h3>
+          <p style="color: #94A3B8; margin: 4px 0 0 0; font-size: 0.9rem;">Información detallada de la reparación y presupuesto actual.</p>
+        </div>
+        <button (click)="showOrderDetailModal = false" style="background: transparent; border: none; color: #94A3B8; font-size: 1.5rem; cursor: pointer;">✕</button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+        <!-- Detalles Generales -->
+        <div>
+          <h4 style="color: #FF0055; margin-top: 0; margin-bottom: 12px; font-weight: 700;">Datos Generales</h4>
+          <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; font-size: 0.9rem;">
+            <li><strong style="color: #94A3B8;">ID Cliente:</strong> {{ selectedOrder?.id_cliente }}</li>
+            <li><strong style="color: #94A3B8;">ID Vehículo:</strong> {{ selectedOrder?.id_vehiculo }}</li>
+            <li><strong style="color: #94A3B8;">Fecha de Ingreso:</strong> {{ selectedOrder?.fecha_ingreso | date:'medium' }}</li>
+            <li><strong style="color: #94A3B8;">Fecha Compromiso:</strong> {{ selectedOrder?.fecha_compromiso_entrega ? (selectedOrder.fecha_compromiso_entrega | date:'medium') : 'No establecida' }}</li>
+            <li><strong style="color: #94A3B8;">Estado Recepción:</strong> {{ selectedOrder?.estado_recepcion || 'No definido' }}</li>
+            <li>
+              <strong style="color: #94A3B8;">Estado Trabajo:</strong> 
+              <span [style.background]="selectedOrder?.estado_trabajo === 'Diagnóstico' ? 'rgba(56, 189, 248, 0.15)' : selectedOrder?.estado_trabajo === 'Presupuestado' ? 'rgba(245, 158, 11, 0.15)' : selectedOrder?.estado_trabajo === 'En Reparación' ? 'rgba(168, 85, 247, 0.15)' : selectedOrder?.estado_trabajo === 'Listo para Entrega' ? 'rgba(236, 72, 153, 0.15)' : 'rgba(16, 185, 129, 0.15)'"
+                    [style.color]="selectedOrder?.estado_trabajo === 'Diagnóstico' ? '#38BDF8' : selectedOrder?.estado_trabajo === 'Presupuestado' ? '#F59E0B' : selectedOrder?.estado_trabajo === 'En Reparación' ? '#A855F7' : selectedOrder?.estado_trabajo === 'Listo para Entrega' ? '#EC4899' : '#10B981'"
+                    style="padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 0.85rem; margin-left: 6px;">
+                {{ selectedOrder?.estado_trabajo }}
+              </span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Historial Timeline/Bitácora -->
+        <div>
+          <h4 style="color: #FF0055; margin-top: 0; margin-bottom: 12px; font-weight: 700;">Línea de Tiempo (Bitácora)</h4>
+          <div style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; border-left: 2px solid rgba(255,255,255,0.1); padding-left: 16px;">
+            <div *ngFor="let bit of selectedOrderBitacora" style="position: relative;">
+              <span style="position: absolute; left: -21px; top: 2px; width: 8px; height: 8px; border-radius: 50%; background: #FF0055;"></span>
+              <div style="font-size: 0.8rem; color: #94A3B8;">{{ bit.fecha_cambio | date:'short' }}</div>
+              <div style="font-weight: bold; font-size: 0.85rem; color: white;">Estado: {{ bit.nuevo_estado }}</div>
+              <div style="font-size: 0.85rem; color: #CBD5E1;">{{ bit.comentario }}</div>
+            </div>
+            <div *ngIf="selectedOrderBitacora.length === 0" style="color: #94A3B8; font-style: italic; font-size: 0.85rem;">No hay registros de bitácora.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Presupuestos y Decisiones del Cliente -->
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+        <h4 style="color: #FF0055; margin-top: 0; margin-bottom: 12px; font-weight: 700;">Presupuesto de la Orden</h4>
+        
+        <div *ngIf="!selectedOrderPresupuesto" style="background: rgba(255,255,255,0.02); border-radius: 8px; padding: 20px; text-align: center; color: #94A3B8; font-size: 0.9rem;">
+          Este vehículo se encuentra en fase de Diagnóstico. Aún no se ha elaborado el presupuesto.
+        </div>
+
+        <div *ngIf="selectedOrderPresupuesto">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px;">
+            <div>
+              <div><strong style="color: #94A3B8;">Estado Presupuesto:</strong> 
+                <span [style.background]="selectedOrderPresupuesto.estado === 'Aprobado' ? 'rgba(16, 185, 129, 0.15)' : selectedOrderPresupuesto.estado === 'Aprobado Parcial' ? 'rgba(245, 158, 11, 0.15)' : selectedOrderPresupuesto.estado === 'Rechazado' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(255,255,255,0.05)'"
+                      [style.color]="selectedOrderPresupuesto.estado === 'Aprobado' ? '#10B981' : selectedOrderPresupuesto.estado === 'Aprobado Parcial' ? '#F59E0B' : selectedOrderPresupuesto.estado === 'Rechazado' ? '#EF4444' : '#94A3B8'"
+                      style="padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 0.85rem; margin-left: 6px;">
+                  {{ selectedOrderPresupuesto.estado }}
+                </span>
+              </div>
+              <div style="font-size: 0.8rem; color: #94A3B8; margin-top: 4px;">{{ selectedOrderPresupuesto.descripcion_general }}</div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 0.85rem; color: #94A3B8;">Monto Aprobado/Estimado</span>
+              <div style="font-size: 1.3rem; font-weight: 700; color: #FF0055;">Bs. {{ selectedOrderPresupuesto.total_estimado }}</div>
+            </div>
+          </div>
+
+          <!-- Tabla de Grupos/Items Aprobados -->
+          <div *ngFor="let group of getGruposPresupuestoCargado()" style="border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 12px; margin-bottom: 12px; background: rgba(0,0,0,0.1);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px;">
+              <div>
+                <strong style="color: white; font-size: 0.95rem;">🔧 {{ group.nombre }}</strong>
+                <span *ngIf="group.es_critico" style="background: rgba(239, 68, 68, 0.15); color: #EF4444; font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-left: 8px;">Obligatorio/Crítico</span>
+              </div>
+              <span style="font-size: 0.85rem; font-weight: bold; color: #CBD5E1;">Subtotal: Bs. {{ calcularSubtotalGrupoCargado(group) }}</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div *ngFor="let item of group.items" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; padding: 4px 0;">
+                <div style="color: #CBD5E1;">
+                  • {{ item.item_descripcion }} ({{ item.tipo_item }})
+                  <span style="font-size: 0.75rem; color: #94A3B8; margin-left: 6px;">x{{ item.cantidad }} @ Bs. {{ item.precio_unitario }}</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-weight: 600;">Bs. {{ item.subtotal }}</span>
+                  <span [style.background]="item.estado_item === 'Aprobado' ? 'rgba(16, 185, 129, 0.15)' : item.estado_item === 'Rechazado' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)'"
+                        [style.color]="item.estado_item === 'Aprobado' ? '#10B981' : item.estado_item === 'Rechazado' ? '#EF4444' : '#F59E0B'"
+                        style="padding: 1px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">
+                    {{ item.estado_item }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; margin-top: 16px;">
+        <button (click)="showOrderDetailModal = false" style="padding: 10px 18px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-weight: 600; cursor: pointer;">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ACTUALIZAR ESTADO DE LA REPARACIÓN -->
+  <div class="modal-backdrop" *ngIf="showUpdateStatusModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 2000;">
+    <div class="modal-card glass-panel" style="width: 100%; max-width: 500px; background: #1E293B; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); color: white;">
+      <h3 style="color: white; margin-top: 0; margin-bottom: 8px; font-size: 1.3rem; font-weight: 700;">Cambiar Estado de Trabajo</h3>
+      <p style="color: #94A3B8; margin-bottom: 24px; font-size: 0.9rem;">Actualice el progreso de la reparación física para informar al cliente.</p>
+
+      <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;">
+        <div>
+          <label style="color: #CBD5E1; display: block; margin-bottom: 6px; font-weight: 600;">Nuevo Estado</label>
+          <select [(ngModel)]="updateStatusState" style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.4); color: white; border: 1px solid rgba(255,255,255,0.15); outline: none;">
+            <option value="En Reparación">⚙️ En Reparación</option>
+            <option value="Pruebas">🔬 En Pruebas</option>
+            <option value="Listo para Entrega">✅ Listo para Entrega (Solicitar Pago)</option>
+            <option value="Completado">🚗 Entregado / Finalizado</option>
+          </select>
+          <small *ngIf="updateStatusState === 'Listo para Entrega'" style="color: #EC4899; margin-top: 4px; display: block;">⚠️ Al poner "Listo para Entrega", el cliente recibirá una notificación push para realizar el pago de los ítems aprobados.</small>
+        </div>
+
+        <div>
+          <label style="color: #CBD5E1; display: block; margin-bottom: 6px; font-weight: 600;">Comentario de Hito (Bitácora)</label>
+          <textarea [(ngModel)]="updateStatusComentario" placeholder="Ej. Se finalizó el ensamble del alternador, procediendo a pruebas de carga..." style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.4); color: white; border: 1px solid rgba(255,255,255,0.15); min-height: 80px; resize: vertical; font-family: inherit;"></textarea>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button (click)="showUpdateStatusModal = false" style="padding: 10px 18px; border-radius: 8px; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; font-weight: 600; cursor: pointer;">
+          Cancelar
+        </button>
+        <button (click)="enviarActualizacionEstado()" style="padding: 10px 18px; border-radius: 8px; background: #FF0055; border: none; color: white; font-weight: 700; cursor: pointer;">
+          Guardar Hito
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DETALLE DEL INCIDENTE -->
+  <div class="modal-backdrop" *ngIf="showIncidenteDetailModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 2000;">
+    <div class="modal-card glass-panel" style="width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; background: #1E293B; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); color: white;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px;">
+        <div>
+          <h3 style="color: white; margin: 0; font-size: 1.4rem; font-weight: 700;">Detalle del Incidente #INC-{{ selectedIncidenteDetail?.id_incidente }}</h3>
+          <p style="color: #94A3B8; margin: 4px 0 0 0; font-size: 0.9rem;">Información detallada de la solicitud de asistencia.</p>
+        </div>
+        <button (click)="showIncidenteDetailModal = false" style="background: transparent; border: none; color: #94A3B8; font-size: 1.5rem; cursor: pointer;">✕</button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; font-size: 0.95rem; line-height: 1.5;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div>
+            <strong style="color: #94A3B8; display: block; font-size: 0.8rem; text-transform: uppercase;">Cliente</strong>
+            <span style="color: white; font-weight: 600;">{{ selectedIncidenteDetail?.cliente || 'Conductor en Ruta' }}</span>
+          </div>
+          <div>
+            <strong style="color: #94A3B8; display: block; font-size: 0.8rem; text-transform: uppercase;">Vehículo</strong>
+            <span style="color: white; font-weight: 600;">{{ selectedIncidenteDetail?.vehiculo || 'No especificado' }}</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div>
+            <strong style="color: #94A3B8; display: block; font-size: 0.8rem; text-transform: uppercase;">Prioridad</strong>
+            <span [style.color]="selectedIncidenteDetail?.nivel_prioridad === 'Alta' ? '#FF0055' : selectedIncidenteDetail?.nivel_prioridad === 'Media' ? '#D97706' : '#10B981'" style="font-weight: 700;">
+              {{ selectedIncidenteDetail?.nivel_prioridad || 'Media' }}
+            </span>
+          </div>
+          <div>
+            <strong style="color: #94A3B8; display: block; font-size: 0.8rem; text-transform: uppercase;">Estado Actual</strong>
+            <span style="color: #38BDF8; font-weight: 700;">{{ selectedIncidenteDetail?.estado }}</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+          <div>
+            <strong style="color: #94A3B8; display: block; font-size: 0.8rem; text-transform: uppercase;">Técnico Asignado</strong>
+            <span style="color: white;">{{ selectedIncidenteDetail?.tecnico_nombre || selectedIncidenteDetail?.tecnico || 'Sin Técnico Asignado' }}</span>
+          </div>
+          <div>
+            <strong style="color: #94A3B8; display: block; font-size: 0.8rem; text-transform: uppercase;">Teléfono Técnico</strong>
+            <span style="color: white;">{{ selectedIncidenteDetail?.tecnico_telefono || 'No disponible' }}</span>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+          <strong style="color: #94A3B8; display: block; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 4px;">Falla Reportada</strong>
+          <span style="color: white; font-weight: 600;">{{ selectedIncidenteDetail?.tipo_problema || selectedIncidenteDetail?.problema }}</span>
+          <p style="margin: 4px 0 0 0; color: #CBD5E1; font-size: 0.9rem;" *ngIf="selectedIncidenteDetail?.descripcion_manual">
+            "{{ selectedIncidenteDetail?.descripcion_manual }}"
+          </p>
+        </div>
+
+        <div style="background: rgba(255, 0, 85, 0.03); border-left: 4px solid #FF0055; padding: 12px; border-radius: 4px 12px 12px 4px;">
+          <strong style="color: #FF0055; display: block; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 4px;">Diagnóstico de la IA</strong>
+          <p style="margin: 0; font-style: italic; color: #E2E8F0; font-size: 0.9rem;">
+            {{ selectedIncidenteDetail?.diagnostico_ia || 'Diagnóstico no disponible.' }}
+          </p>
+        </div>
+
+        <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;" *ngIf="selectedIncidenteDetail?.observaciones_tecnico">
+          <strong style="color: #94A3B8; display: block; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 4px;">Observaciones del Técnico</strong>
+          <p style="margin: 0; color: #CBD5E1; font-size: 0.9rem; white-space: pre-wrap;">
+            {{ selectedIncidenteDetail?.observaciones_tecnico }}
+          </p>
+        </div>
+
+        <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div>
+            <strong style="color: #94A3B8; display: block; font-size: 0.8rem; text-transform: uppercase;">Costo Total</strong>
+            <span style="color: #10B981; font-weight: 700; font-size: 1.1rem;">
+              Bs. {{ selectedIncidenteDetail?.monto_pago || selectedIncidenteDetail?.monto || 0 }}
+            </span>
+            <span style="font-size: 0.75rem; color: #94A3B8; display: block; margin-top: 2px;" *ngIf="selectedIncidenteDetail?.monto_base">
+              (Base: Bs. {{ selectedIncidenteDetail.monto_base }} + Adicional: Bs. {{ selectedIncidenteDetail.monto_adicional || 0 }})
+            </span>
+          </div>
+          <div>
+            <strong style="color: #94A3B8; display: block; font-size: 0.8rem; text-transform: uppercase;">Estado del Pago</strong>
+            <span [style.color]="selectedIncidenteDetail?.pago_completado ? '#10B981' : '#F59E0B'" style="font-weight: bold;">
+              {{ selectedIncidenteDetail?.pago_completado ? '✅ Aprobado / Pagado' : '⏳ Pendiente' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px;">
+        <button (click)="showIncidenteDetailModal = false" style="padding: 10px 18px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-weight: 600; cursor: pointer;">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Justificación de Rechazo de Solicitud (Premium Glassmorphism) -->
+<div class="modal-backdrop" *ngIf="showRechazoModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 2000;">
+  <div class="modal-card glass-panel" style="width: 100%; max-width: 500px; background: #1E293B; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); color: white;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px;">
+      <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #F43F5E;">⚠️ Rechazar Solicitud</h3>
+      <button (click)="showRechazoModal = false; solicitudARechazar = null;" style="background: none; border: none; color: #94A3B8; font-size: 1.25rem; cursor: pointer;">&times;</button>
+    </div>
+
+    <p style="font-size: 0.95rem; color: #CBD5E1; margin-bottom: 20px; line-height: 1.5;">
+      Por favor selecciona el motivo por el cual estás rechazando el auxilio de <strong>{{ solicitudARechazar?.tipo_problema }}</strong> para el cliente <strong>{{ solicitudARechazar?.cliente }}</strong>.
+    </p>
+
+    <div style="margin-bottom: 20px;">
+      <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #94A3B8; margin-bottom: 8px;">Motivo de Rechazo</label>
+      <select [(ngModel)]="justificacionRechazo" style="width: 100%; padding: 12px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.1); font-size: 0.95rem; margin-bottom: 16px; width: 100%; box-sizing: border-box;">
+        <option *ngFor="let opt of opcionesRechazo" [value]="opt">{{ opt }}</option>
+      </select>
+
+      <div *ngIf="justificacionRechazo === 'Otro'">
+        <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #94A3B8; margin-bottom: 8px;">Escribe el motivo</label>
+        <textarea [(ngModel)]="otroJustificativo" rows="3" placeholder="Ej. Fuera de horario de atención..." style="width: 100%; padding: 12px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.1); font-size: 0.95rem; resize: none; box-sizing: border-box;"></textarea>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 12px; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px;">
+      <button (click)="showRechazoModal = false; solicitudARechazar = null;" style="padding: 10px 18px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-weight: 600; cursor: pointer;">
+        Cancelar
+      </button>
+      <button (click)="confirmarRechazo()" style="padding: 10px 18px; border-radius: 8px; background: #F43F5E; border: none; color: white; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+        Confirmar Rechazo
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,574 @@
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <span>🛡️</span> AsisCar Master
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-link" [class.active]="currentTab === 'dashboard'" (click)="changeTab('dashboard')"><span>📊</span> Dashboard</a>
+      <a class="nav-link" [class.active]="currentTab === 'usuarios'" (click)="changeTab('usuarios')"><span>👥</span> Usuarios</a>
+      <a class="nav-link" [class.active]="currentTab === 'talleres'" (click)="changeTab('talleres')"><span>🛠️</span> Talleres</a>
+      <a class="nav-link" [class.active]="currentTab === 'incidentes'" (click)="changeTab('incidentes')"><span>🆘</span> Incidentes</a>
+      <a class="nav-link" [class.active]="currentTab === 'bitacora'" (click)="changeTab('bitacora')"><span>📝</span> Logs / Bitácora</a>
+      <a class="nav-link" [class.active]="currentTab === 'backups'" (click)="changeTab('backups')"><span>💾</span> Base de Datos</a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-logout" (click)="cerrarSesion()">Cerrar Sesión</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <!-- CABECERA INSTITUCIONAL EXCLUSIVA PARA IMPRESIÓN (PDF) -->
+    <div class="print-only-header">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; padding-bottom: 12px; border-bottom: 2px solid #1e293b;">
+        <div>
+          <h1 style="font-size: 1.6rem; font-weight: 800; margin: 0; letter-spacing: -0.5px;">ASISCAR</h1>
+          <span style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px;">Sistema de Auxilio Vial</span>
+        </div>
+        <div style="text-align: right;">
+          <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0;">{{ adminName }}</h3>
+          <p style="font-size: 0.8rem; margin: 2px 0 0 0;">Rol: SuperAdmin</p>
+          <p style="font-size: 0.75rem; margin: 2px 0 0 0;">Fecha de emisión: {{ currentDate | date:'dd/MM/yyyy HH:mm' }}</p>
+        </div>
+      </div>
+      <h2 style="font-size: 1.15rem; font-weight: 700; margin: 14px 0 0 0; text-transform: uppercase; letter-spacing: 0.5px;">Centro de Control Maestro - Informe General</h2>
+    </div>
+
+    <header class="main-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <div class="header-welcome">
+        <h1>Centro de Control Maestro</h1>
+        <p>Bienvenido de vuelta, {{ adminName }}</p>
+      </div>
+      
+      <div class="time-filter-container" *ngIf="currentTab === 'dashboard'" style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; padding: 12px 18px; border-radius: 12px; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.08);">
+        <!-- Tipo de Filtro -->
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Tipo de Filtro</label>
+          <select [(ngModel)]="filtroTipo" style="padding: 10px; min-width: 160px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem; cursor: pointer; outline: none;">
+            <option value="historico">Todo el Histórico</option>
+            <option value="hoy">Hoy</option>
+            <option value="dia_especifico">Día Específico</option>
+            <option value="mes">Mensual</option>
+            <option value="rango_meses">Rango de Meses</option>
+            <option value="anio">Anual</option>
+            <option value="rango_fechas">Rango de Fechas Personalizado</option>
+          </select>
+        </div>
+
+        <!-- Día Específico -->
+        <div *ngIf="filtroTipo === 'dia_especifico'" style="display: flex; flex-direction: column; gap: 6px;">
+          <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Fecha</label>
+          <input type="date" [(ngModel)]="filtroFecha" style="padding: 10px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem; outline: none; border-color: rgba(255,255,255,0.15);">
+        </div>
+
+        <!-- Mes (Mensual) -->
+        <div *ngIf="filtroTipo === 'mes'" style="display: flex; gap: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Mes</label>
+            <select [(ngModel)]="filtroMes" style="padding: 10px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem; cursor: pointer; outline: none; min-width: 60px;">
+              <option *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="m">{{ m }}</option>
+            </select>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Año</label>
+            <input type="number" [(ngModel)]="filtroAnio" style="padding: 10px; width: 100px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem; outline: none;">
+          </div>
+        </div>
+
+        <!-- Rango de Meses -->
+        <div *ngIf="filtroTipo === 'rango_meses'" style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Mes Inicio</label>
+            <select [(ngModel)]="filtroMesInicio" style="padding: 10px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem; cursor: pointer; outline: none;">
+              <option *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="m">{{ m }}</option>
+            </select>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Mes Fin</label>
+            <select [(ngModel)]="filtroMesFin" style="padding: 10px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem; cursor: pointer; outline: none;">
+              <option *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="m">{{ m }}</option>
+            </select>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Año</label>
+            <input type="number" [(ngModel)]="filtroAnio" style="padding: 10px; width: 100px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem; outline: none;">
+          </div>
+        </div>
+
+        <!-- Año -->
+        <div *ngIf="filtroTipo === 'anio'" style="display: flex; flex-direction: column; gap: 6px;">
+          <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Año</label>
+          <input type="number" [(ngModel)]="filtroAnio" style="padding: 10px; width: 100px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem; outline: none;">
+        </div>
+
+        <!-- Rango de Fechas Personalizado -->
+        <div *ngIf="filtroTipo === 'rango_fechas'" style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Desde</label>
+            <input type="date" [(ngModel)]="filtroFechaInicio" style="padding: 10px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem; outline: none;">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Hasta</label>
+            <input type="date" [(ngModel)]="filtroFechaFin" style="padding: 10px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem; outline: none;">
+          </div>
+        </div>
+
+        <div style="width: 1px; height: 36px; background: rgba(255,255,255,0.1); margin: 0 4px;" class="filter-divider"></div>
+
+        <!-- Taller (Filtro del Superadmin) -->
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label style="color: #94A3B8; font-size: 0.85rem; font-weight: 600;">Taller</label>
+          <select [(ngModel)]="selectedTaller" style="padding: 10px; max-width: 200px; border-radius: 8px; background: #0F172A; color: white; border: 1px solid rgba(255,255,255,0.15); font-family: inherit; font-size: 0.9rem; cursor: pointer; outline: none;">
+            <option value="">Todos los Talleres</option>
+            <option *ngFor="let t of talleres" [value]="t.id_taller">{{ t.razon_social }}</option>
+          </select>
+        </div>
+
+        <!-- Botón de Buscar -->
+        <button (click)="onFilterChange()" style="padding: 10px 20px; font-weight: bold; height: 42px; background: linear-gradient(135deg, #FF0055, #E6004C); color: white; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 12px rgba(255, 0, 85, 0.3);"
+                onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 16px rgba(255, 0, 85, 0.4)';"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(255, 0, 85, 0.3)';">
+          <span>🔍</span> Buscar
+        </button>
+
+        <!-- Botones de Exportar -->
+        <div class="no-print" style="display: flex; gap: 10px; align-items: center;">
+          <!-- Botón Exportar PDF -->
+          <button (click)="exportarPDF()" style="padding: 10px 16px; font-weight: bold; height: 42px; background: rgba(255, 255, 255, 0.05); color: white; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"
+                  onmouseover="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.borderColor='rgba(255, 255, 255, 0.4)';"
+                  onmouseout="this.style.background='rgba(255, 255, 255, 0.05)'; this.style.borderColor='rgba(255, 255, 255, 0.2)';">
+            <span>📄</span> PDF
+          </button>
+
+          <!-- Botón Exportar Excel -->
+          <button (click)="exportarExcel()" style="padding: 10px 16px; font-weight: bold; height: 42px; background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);"
+                  onmouseover="this.style.background='rgba(16, 185, 129, 0.2)'; this.style.borderColor='rgba(16, 185, 129, 0.5)';"
+                  onmouseout="this.style.background='rgba(16, 185, 129, 0.1)'; this.style.borderColor='rgba(16, 185, 129, 0.3)';">
+            <span>📊</span> Excel
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ========================================== -->
+    <!-- VISTA 1: DASHBOARD (GRÁFICAS + ACCIONES) -->
+    <!-- ========================================== -->
+    <div class="data-section animate-fade-in" *ngIf="currentTab === 'dashboard'">
+      <!-- 4 Tarjetas KPI Principales -->
+      <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+        <div class="metric-card gradient-purple">
+          <div class="metric-label">Ingresos Totales (Transaccionados)</div>
+          <div class="metric-value">Bs. {{ stats.total_recaudado | number:'1.2-2' }}</div>
+          <div class="metric-desc">Monto total facturado en la plataforma</div>
+        </div>
+        <div class="metric-card gradient-blue">
+          <div class="metric-label">Comisión Plataforma (10%)</div>
+          <div class="metric-value">Bs. {{ stats.ganancia_plataforma | number:'1.2-2' }}</div>
+          <div class="metric-desc">Ganancia neta del sistema</div>
+        </div>
+        <div class="metric-card glass-panel" style="border-left: 4px solid #8B5CF6;">
+          <div class="metric-label">Talleres Registrados</div>
+          <div class="metric-value">{{ stats.talleres }}</div>
+          <div class="metric-desc" style="color: #A78BFA; font-weight: 600;">+{{ totalTalleresRegistrados }} nuevos en el período</div>
+        </div>
+        <div class="metric-card glass-panel" style="border-left: 4px solid #10B981;">
+          <div class="metric-label">Incidentes Totales</div>
+          <div class="metric-value">{{ stats.incidentes }}</div>
+          <div class="metric-desc">Servicios y asistencias reportadas</div>
+        </div>
+      </div>
+      
+      <!-- Barra de Métricas Operativas Secundarias -->
+      <div class="operational-metrics-bar glass-panel" style="display: flex; justify-content: space-around; align-items: center; padding: 16px; margin-top: 16px; margin-bottom: 24px; border-radius: 12px; gap: 16px; flex-wrap: wrap; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.05);">
+        <div class="op-metric-item" style="text-align: center; flex: 1; min-width: 120px;">
+          <div style="font-size: 0.8rem; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Tiempo Asignación</div>
+          <div style="font-size: 1.4rem; font-weight: 700; color: #10B981; margin-top: 4px;">{{ kpiData.avg_asignacion_minutos | number:'1.1-1' }} min</div>
+        </div>
+        <div style="width: 1px; height: 32px; background: rgba(255,255,255,0.1);" class="op-divider"></div>
+        <div class="op-metric-item" style="text-align: center; flex: 1; min-width: 120px;">
+          <div style="font-size: 0.8rem; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Tiempo Llegada</div>
+          <div style="font-size: 1.4rem; font-weight: 700; color: #3B82F6; margin-top: 4px;">{{ kpiData.avg_llegada_minutos | number:'1.1-1' }} min</div>
+        </div>
+        <div style="width: 1px; height: 32px; background: rgba(255,255,255,0.1);" class="op-divider"></div>
+        <div class="op-metric-item" style="text-align: center; flex: 1; min-width: 120px;">
+          <div style="font-size: 0.8rem; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Cumplimiento SLA</div>
+          <div style="font-size: 1.4rem; font-weight: 700; color: #8B5CF6; margin-top: 4px;">{{ kpiData.sla_cumplimiento_pct | number:'1.1-1' }}%</div>
+        </div>
+        <div style="width: 1px; height: 32px; background: rgba(255,255,255,0.1);" class="op-divider"></div>
+        <div class="op-metric-item" style="text-align: center; flex: 1; min-width: 120px;">
+          <div style="font-size: 0.8rem; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Casos Cancelados</div>
+          <div style="font-size: 1.4rem; font-weight: 700; color: #EF4444; margin-top: 4px;">{{ kpiData.casos_cancelados }}</div>
+        </div>
+        <div style="width: 1px; height: 32px; background: rgba(255,255,255,0.1);" class="op-divider"></div>
+        <div class="op-metric-item" style="text-align: center; flex: 1; min-width: 120px;">
+          <div style="font-size: 0.8rem; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Nuevos Conductores</div>
+          <div style="font-size: 1.4rem; font-weight: 700; color: #F43F5E; margin-top: 4px;">+{{ totalConductoresRegistrados }}</div>
+        </div>
+      </div>
+
+      <!-- Gráficas Estilizadas -->
+      <div class="section-card glass-panel" style="margin-bottom: 32px;">
+        <div class="section-header">
+          <h3>Monitoreo Estadístico</h3>
+          <span class="badge badge-info">📈 Análisis de Plataforma</span>
+        </div>
+        <div class="charts-container" style="display: flex; gap: 24px; flex-wrap: wrap;">
+          
+          <div class="chart-box" style="flex: 1; min-width: 320px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 20px;">
+            <h4 style="color: #94A3B8; margin-bottom: 16px; text-align: center;">Incidentes por Tipo</h4>
+            <div style="position: relative; height: 350px; width: 100%; display: flex; justify-content: center; align-items: center;">
+              <canvas id="incidentsPieChart"></canvas>
+            </div>
+          </div>
+          
+          <div class="chart-box" style="flex: 1.5; min-width: 400px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 20px;">
+            <h4 style="color: #94A3B8; margin-bottom: 16px; text-align: center;">Tendencia de Registros (Talleres y Conductores)</h4>
+            <div *ngIf="registrosTimeline.length === 0" style="height: 350px; display: flex; align-items: center; justify-content: center; color: #64748B;">No hay datos de registros para este periodo</div>
+            <div [hidden]="registrosTimeline.length === 0" style="position: relative; height: 350px; width: 100%;">
+              <canvas id="registrationsChart"></canvas>
+            </div>
+          </div>
+
+        </div>
+        
+        <!-- Mapa en fila separada -->
+        <div style="margin-top: 24px;">
+          <div class="chart-box" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 20px;">
+            <h4 style="color: #94A3B8; margin-bottom: 16px; text-align: center;">Zonas con más Incidentes (Mapa de Calor)</h4>
+            <div id="incidentsMap" style="height: 350px; width: 100%; border-radius: 8px; z-index: 1;"></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Top Talleres -->
+      <div class="section-card" style="margin-bottom: 32px;">
+        <div class="section-header">
+          <h3>Ranking de Talleres Más Eficientes</h3>
+          <span class="badge badge-info">🏆 Top 5 Resolutivos</span>
+        </div>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Puesto</th>
+                <th>Taller</th>
+                <th>Tiempo Promedio de Resolución</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="kpiData.talleres_eficientes.length === 0">
+                <td colspan="3" class="empty-state">No hay suficientes datos de asistencias finalizadas para generar el ranking.</td>
+              </tr>
+              <tr *ngFor="let t of kpiData.talleres_eficientes; let i = index">
+                <td>#{{ i + 1 }}</td>
+                <td style="font-weight: 600; color: #f8fafc;">{{ t.taller }}</td>
+                <td>{{ t.avg_resolucion | number:'1.1-1' }} mins</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Control y Rendimiento de Tenants -->
+      <div class="section-card glass-panel" style="margin-bottom: 32px;">
+        <div class="section-header" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="color: #F8FAFC; margin: 0; font-size: 1.25rem; font-weight: 700;">Control y Rendimiento de Tenants (Talleres)</h3>
+          <span class="badge badge-info" style="background: rgba(56, 189, 248, 0.1); color: #38BDF8; font-weight: 600; padding: 4px 8px; border-radius: 4px;">💼 Monitoreo de Facturación y SLA</span>
+        </div>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Taller</th>
+                <th>Subdominio / Slug</th>
+                <th style="text-align: center;">Técnicos</th>
+                <th style="text-align: center;">Asistencias</th>
+                <th style="text-align: center;">Calificación</th>
+                <th style="text-align: right;">Facturación Total</th>
+                <th style="text-align: right; color: #38BDF8;">Comisión (10%)</th>
+                <th style="text-align: center;">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let t of talleres">
+                <td style="font-weight: 600; color: #f8fafc;">{{ t.razon_social }}</td>
+                <td><code style="color: #38BDF8; font-family: monospace; font-size: 0.9rem;">{{ t.subdominio_slug }}</code></td>
+                <td style="text-align: center;">{{ t.tecnicos_count }}</td>
+                <td style="text-align: center; font-weight: bold; color: #10B981;">{{ t.asistencias_count }}</td>
+                <td style="text-align: center; color: #F59E0B; font-weight: 600;">⭐ {{ t.calificacion_promedio | number:'1.1-1' }}</td>
+                <td style="text-align: right; font-weight: 600;">Bs. {{ t.facturacion_total | number:'1.2-2' }}</td>
+                <td style="text-align: right; color: #38BDF8; font-weight: bold;">Bs. {{ t.comision_plataforma | number:'1.2-2' }}</td>
+                <td style="text-align: center;">
+                  <span class="status-pill" 
+                        [ngClass]="{'status-approved': t.estado_aprobacion === 'Aprobado', 'status-pending': t.estado_aprobacion === 'Pendiente', 'status-rejected': t.estado_aprobacion === 'Rechazado'}">
+                    {{ t.estado_aprobacion }}
+                  </span>
+                </td>
+              </tr>
+              <tr *ngIf="talleres.length === 0">
+                <td colspan="8" class="empty-state" style="text-align: center; color: #94A3B8; padding: 24px;">No hay talleres registrados.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VISTA 2: USUARIOS (CONDUCTORES) -->
+    <!-- ========================================== -->
+    <div class="data-section animate-fade-in" *ngIf="currentTab === 'usuarios'">
+      <div class="section-card">
+        <div class="section-header">
+          <h3>Directorio de Conductores</h3>
+        </div>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombres</th>
+                <th>Correo</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let c of clientes">
+                <td>#CL-{{ c.id_cliente }}</td>
+                <td>{{ c.nombres }} {{ c.apellidos }}</td>
+                <td>{{ c.correo }}</td>
+                <td>
+                  <span class="status-pill status-approved">Activo</span>
+                </td>
+              </tr>
+              <tr *ngIf="clientes.length === 0">
+                <td colspan="4" style="text-align: center; color: #94A3B8;">No hay clientes registrados en el sistema.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VISTA 3: TALLERES (TODOS) -->
+    <!-- ========================================== -->
+    <div class="data-section animate-fade-in" *ngIf="currentTab === 'talleres'">
+      
+      <!-- Resumen de Validación de Talleres -->
+      <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div class="metric-card glass-panel" style="border-left: 4px solid #10B981; background: rgba(16, 185, 129, 0.05); padding: 20px; border-radius: 12px;">
+          <div class="metric-label" style="color: #94A3B8; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Talleres Aprobados</div>
+          <div class="metric-value" style="font-size: 2.2rem; font-weight: bold; color: #10B981; margin: 8px 0;">{{ talleresAprobados }}</div>
+          <div class="metric-desc" style="color: #64748B; font-size: 0.85rem;">Talleres activos autorizados en la plataforma</div>
+        </div>
+        <div class="metric-card glass-panel" style="border-left: 4px solid #F59E0B; background: rgba(245, 158, 11, 0.05); padding: 20px; border-radius: 12px;">
+          <div class="metric-label" style="color: #94A3B8; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">En Espera de Validación</div>
+          <div class="metric-value" style="font-size: 2.2rem; font-weight: bold; color: #F59E0B; margin: 8px 0;">{{ talleresPendientes }}</div>
+          <div class="metric-desc" style="color: #64748B; font-size: 0.85rem;">Registros de talleres pendientes de revisión</div>
+        </div>
+      </div>
+      
+      <!-- Talleres Pendientes -->
+      <div class="section-card" style="margin-bottom: 32px;">
+        <div class="section-header">
+          <h3>Talleres Pendientes de Validación</h3>
+          <span class="badge badge-warning">⚠️ Acción requerida</span>
+        </div>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Razón Social</th>
+                <th>NIT</th>
+                <th>Dirección</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let t of talleres">
+                <td *ngIf="t.estado_aprobacion === 'Pendiente'" style="font-weight: 600; color: #f8fafc;">{{ t.razon_social }}</td>
+                <td *ngIf="t.estado_aprobacion === 'Pendiente'">{{ t.nit }}</td>
+                <td *ngIf="t.estado_aprobacion === 'Pendiente'">{{ t.direccion }}</td>
+                <td *ngIf="t.estado_aprobacion === 'Pendiente'">
+                  <span class="status-pill status-pending">{{ t.estado_aprobacion }}</span>
+                </td>
+                <td *ngIf="t.estado_aprobacion === 'Pendiente'">
+                  <div class="actions-wrapper">
+                    <button class="btn-action btn-approve" [disabled]="procesandoId === t.id_taller" (click)="aprobarTaller(t.id_taller)">
+                      {{ procesandoId === t.id_taller ? '...' : 'Aprobar' }}
+                    </button>
+                    <button class="btn-action btn-reject" [disabled]="procesandoId === t.id_taller" (click)="rechazarTaller(t.id_taller)">
+                      Rechazar
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header">
+          <h3>Directorio de Talleres Registrados</h3>
+        </div>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Razón Social</th>
+                <th>NIT</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let t of talleres">
+                <td>#TL-{{ t.id_taller }}</td>
+                <td>{{ t.razon_social }}</td>
+                <td>{{ t.nit }}</td>
+                <td>
+                  <span class="status-pill" 
+                        [ngClass]="{'status-approved': t.estado_aprobacion === 'Aprobado', 'status-pending': t.estado_aprobacion === 'Pendiente', 'status-rejected': t.estado_aprobacion === 'Rechazado'}">
+                    {{ t.estado_aprobacion }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VISTA 4: INCIDENTES (HISTORIAL) -->
+    <!-- ========================================== -->
+    <div class="data-section animate-fade-in" *ngIf="currentTab === 'incidentes'">
+      <div class="section-card">
+        <div class="section-header">
+          <h3>Historial Global de Incidentes</h3>
+        </div>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Tipo Problema</th>
+                <th>Urgencia</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let inc of incidentes">
+                <td>#INC-{{ inc.id_incidente }}</td>
+                <td>{{ inc.tipo_problema }}</td>
+                <td>{{ inc.nivel_prioridad }}</td>
+                <td>
+                  <span class="status-pill" [style.background]="inc.estado_solicitud === 'Completado' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)'">
+                    {{ inc.estado_solicitud }}
+                  </span>
+                </td>
+              </tr>
+              <tr *ngIf="incidentes.length === 0">
+                <td colspan="4" style="text-align: center; color: #94A3B8;">Aún no se han registrado incidentes en ruta.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VISTA 5: BITÁCORA (LOGS) -->
+    <!-- ========================================== -->
+    <div class="data-section animate-fade-in" *ngIf="currentTab === 'bitacora'">
+      <div class="section-card">
+        <div class="section-header">
+          <h3>Historial de Actividad (Bitácora)</h3>
+          <span class="badge badge-info">⏱️ Últimas acciones registradas</span>
+        </div>
+        <div class="timeline-container">
+          <div class="timeline-item" *ngFor="let log of historialAcciones">
+            <div class="timeline-icon">📝</div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-action">{{ log.accion }}</span>
+                <span class="timeline-date">{{ log.fecha_hora | date:'medium' }}</span>
+              </div>
+              <p class="timeline-desc">{{ log.descripcion }}</p>
+              <span class="timeline-user">Realizado por: {{ log.tipo_usuario }}</span>
+            </div>
+          </div>
+          <div *ngIf="historialAcciones.length === 0" class="empty-state">
+            <p>Aún no hay registros en la bitácora.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VISTA 6: BACKUPS Y BASE DE DATOS -->
+    <!-- ========================================== -->
+    <div class="data-section animate-fade-in" *ngIf="currentTab === 'backups'">
+      <div class="section-card" style="margin-bottom: 32px; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.1);">
+        <div class="section-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 16px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h3 style="color: #F8FAFC; margin: 0; font-size: 1.5rem; font-weight: 700;">Copias de Seguridad (Backups)</h3>
+            <p style="color: #94A3B8; margin: 4px 0 0 0; font-size: 0.9rem;">Resguarda y recupera el estado de toda la plataforma AsisCar.</p>
+          </div>
+          <button (click)="generarBackupManual()" 
+                  style="background: linear-gradient(135deg, #FF0055, #D00045); color: white; border: none; border-radius: 8px; padding: 12px 20px; font-weight: bold; cursor: pointer; font-size: 0.95rem; box-shadow: 0 4px 12px rgba(255, 0, 85, 0.3); display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;"
+                  onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 16px rgba(255, 0, 85, 0.4)';"
+                  onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(255, 0, 85, 0.3)';">
+            ⚡ Generar Backup Manual
+          </button>
+        </div>
+
+        <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 16px; margin-bottom: 32px; display: flex; align-items: center; gap: 16px;">
+          <div style="font-size: 2rem;">⏰</div>
+          <div>
+            <h4 style="color: #10B981; margin: 0; font-size: 1rem; font-weight: 600;">Planificación Automática Activa</h4>
+            <p style="color: #94A3B8; margin: 4px 0 0 0; font-size: 0.85rem;">La base de datos se respalda automáticamente en el servidor todos los días a las 02:00 AM (Hora local del servidor). Se conservan las últimas 7 copias de seguridad.</p>
+          </div>
+        </div>
+
+        <h4 style="color: #F8FAFC; font-weight: 600; margin-bottom: 16px; font-size: 1.1rem; border-left: 4px solid #FF0055; padding-left: 10px;">Historial de Backups Automáticos</h4>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Archivo</th>
+                <th>Tamaño</th>
+                <th>Fecha de Creación</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let b of backups">
+                <td style="font-weight: 600; color: #F8FAFC; font-family: monospace;">{{ b.filename }}</td>
+                <td>{{ (b.size_bytes / 1024) | number:'1.1-1' }} KB</td>
+                <td>{{ b.created_at | date:'medium' }}</td>
+                <td>
+                  <button (click)="descargarBackup(b.filename)" 
+                          style="background: #1E293B; color: #38BDF8; border: 1px solid #334155; border-radius: 6px; padding: 6px 12px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;"
+                          onmouseover="this.style.background='#334155'; this.style.borderColor='#38BDF8';"
+                          onmouseout="this.style.background='#1E293B'; this.style.borderColor='#334155';">
+                    📥 Descargar
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="backups.length === 0">
+                <td colspan="4" style="text-align: center; color: #94A3B8; padding: 24px 0;">No se han registrado backups automáticos todavía.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>

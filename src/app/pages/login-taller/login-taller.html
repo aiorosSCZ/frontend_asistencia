@@ -1,0 +1,64 @@
+<div class="login-container">
+  <div class="gradient-bg">
+    <div class="sphere red-sphere"></div>
+    <div class="sphere yellow-sphere"></div>
+  </div>
+
+  <div class="login-card glass-panel animate-fade-in">
+    <div class="login-header">
+      <span class="logo-icon">🚨</span>
+      <h2>Acceso a Talleres</h2>
+      <p>Ingresa tus credenciales para administrar tus servicios</p>
+    </div>
+
+    <div class="alert error-alert" *ngIf="errorMsg">
+      ⚠️ {{ errorMsg }}
+    </div>
+
+    <form (submit)="onLogin($event)" class="login-form">
+      <div class="form-group">
+        <label for="correo">Correo Electrónico</label>
+        <div class="input-wrapper">
+          <span class="input-icon">✉️</span>
+          <input 
+            type="email" 
+            id="correo" 
+            name="correo" 
+            [(ngModel)]="correo" 
+            placeholder="ejemplo@taller.com" 
+            required
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <div class="input-wrapper">
+          <span class="input-icon">🔒</span>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            [(ngModel)]="password" 
+            placeholder="••••••••" 
+            required
+          >
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" [disabled]="loading">
+        {{ loading ? 'Iniciando sesión...' : 'Ingresar al Panel' }}
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <p>¿No tienes cuenta? <a routerLink="/registro-taller">Regístrate aquí</a></p>
+      <p style="margin-top: 12px;"><a routerLink="/recuperar-password" style="color: #94a3b8; font-size: 0.9rem;">¿Olvidaste tu contraseña?</a></p>
+      <p style="margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+        <a routerLink="/" style="color: #FF0055; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+          <span>🏠</span> Volver a la pantalla principal
+        </a>
+      </p>
+    </div>
+  </div>
+</div>

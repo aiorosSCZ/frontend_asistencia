@@ -1,0 +1,498 @@
+@import 'leaflet/dist/leaflet.css';
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  --primary: #0066FF; /* Modern Blue */
+  --primary-hover: #0052CC;
+  --secondary: #F8FAFC; /* Light Blue-ish Gray */
+  --accent: #FACC15; /* Warning Yellow */
+  --bg-dark: #FFFFFF; /* Surface */
+  --bg-light: #F1F5F9; /* Base Background */
+  --text-light: #1E293B; /* Body text */
+  --text-dark: #0F172A; /* Heading text */
+  
+  --bg-surface: #FFFFFF;
+  --bg-base: #F8FAFC;
+  --border-color: #E2E8F0;
+  --text-muted: #64748B;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.3);
+
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+[data-theme="dark"] {
+  --primary: #3B82F6;
+  --primary-hover: #2563EB;
+  --secondary: #0F172A;
+  --accent: #FBBF24;
+  --bg-dark: #1E293B;
+  --bg-light: #0B0F19;
+  --text-light: #CBD5E1;
+  --text-dark: #F8FAFC;
+
+  --bg-surface: #1E293B;
+  --bg-base: #0B0F19;
+  --border-color: #334155;
+  --text-muted: #94A3B8;
+  --glass-bg: rgba(30, 41, 59, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--secondary);
+  color: var(--text-light);
+  overflow-x: hidden;
+  smooth-scroll: true;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.3s ease;
+}
+
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-family: var(--font-heading);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+  box-shadow: 0 4px 14px 0 rgba(0, 102, 255, 0.3);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 102, 255, 0.4);
+}
+
+.btn-secondary {
+  background-color: white;
+  color: var(--text-dark);
+  border: 1px solid #E2E8F0;
+}
+
+.btn-secondary:hover {
+  background-color: #F1F5F9;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+}
+
+.btn-outline:hover {
+  background-color: var(--primary);
+  color: white;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Dark Mode Global Rules */
+[data-theme="dark"] body {
+  background-color: var(--bg-light) !important;
+}
+
+[data-theme="dark"] .topbar h1,
+[data-theme="dark"] .card-header h3,
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+  color: var(--text-dark) !important;
+}
+
+[data-theme="dark"] .card-desc,
+[data-theme="dark"] .stat-label,
+[data-theme="dark"] .request-header,
+[data-theme="dark"] p {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] label {
+  color: var(--text-light) !important;
+}
+
+[data-theme="dark"] td,
+[data-theme="dark"] th {
+  color: var(--text-light) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background: var(--bg-base) !important;
+  background-color: var(--bg-base) !important;
+  color: var(--text-light) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .btn-secondary {
+  background: var(--bg-surface) !important;
+  background-color: var(--bg-surface) !important;
+  color: var(--text-light) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background: var(--bg-base) !important;
+  background-color: var(--bg-base) !important;
+}
+
+/* Force dark theme for elements with inline white background/borders (excluding sidebar) */
+[data-theme="dark"] [style*="background: white"]:not(.sidebar):not(aside):not(.brand):not(.logo),
+[data-theme="dark"] [style*="background:white"]:not(.sidebar):not(aside):not(.brand):not(.logo),
+[data-theme="dark"] [style*="background: #FFFFFF"]:not(.sidebar):not(aside):not(.brand):not(.logo),
+[data-theme="dark"] [style*="background:#FFFFFF"]:not(.sidebar):not(aside):not(.brand):not(.logo),
+[data-theme="dark"] [style*="background: rgb(255, 255, 255)"]:not(.sidebar):not(aside):not(.brand):not(.logo),
+[data-theme="dark"] [style*="background:rgb(255, 255, 255)"]:not(.sidebar):not(aside):not(.brand):not(.logo) {
+  background: var(--bg-surface) !important;
+  background-color: var(--bg-surface) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Force text and option colors in dark mode */
+[data-theme="dark"] option,
+[data-theme="dark"] select option {
+  color: var(--text-light) !important;
+  background: var(--bg-surface) !important;
+  background-color: var(--bg-surface) !important;
+}
+
+[data-theme="dark"] .dropdown-item {
+  color: var(--text-light) !important;
+}
+
+[data-theme="dark"] .dropdown-item span {
+  color: var(--text-dark) !important;
+}
+
+[data-theme="dark"] .notifications-dropdown {
+  background: var(--bg-surface) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .notifications-dropdown h4 {
+  color: var(--text-dark) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+[data-theme="dark"] .dropdown-item {
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+[data-theme="dark"] .empty-dropdown {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] tr {
+  border-bottom-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] select option {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-light) !important;
+}
+
+/* Force dark theme for elements with inline base background */
+[data-theme="dark"] [style*="background: #F8FAFC"],
+[data-theme="dark"] [style*="background:#F8FAFC"] {
+  background: var(--bg-base) !important;
+  background-color: var(--bg-base) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Global strong text override */
+[data-theme="dark"] strong {
+  color: var(--text-dark) !important;
+}
+
+/* Override inline text colors for dark theme */
+[data-theme="dark"] [style*="color: #64748B"],
+[data-theme="dark"] [style*="color:#64748B"] {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] [style*="color: #334155"],
+[data-theme="dark"] [style*="color:#334155"],
+[data-theme="dark"] [style*="color: #1E293B"],
+[data-theme="dark"] [style*="color:#1E293B"],
+[data-theme="dark"] [style*="color: #475569"],
+[data-theme="dark"] [style*="color:#475569"] {
+  color: var(--text-light) !important;
+}
+
+/* ==========================================================================
+   ESTILOS DE IMPRESIÓN PREMIUM - INFORME EJECUTIVO ASISCAR (TEMA AZUL)
+   ========================================================================== */
+@media print {
+  /* 1. Resetear contenedores y flujos de página para evitar hojas en blanco */
+  html, body, app-root, app-dashboard, 
+  .dashboard-layout, .main-content, .dashboard-body {
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+    float: none !important;
+    position: static !important;
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* 2. Ocultar todos los elementos interactivos y de navegación */
+  .sidebar,
+  .topbar,
+  .no-print,
+  .nav-item,
+  .brand,
+  .sidebar-toggle-btn,
+  .sidebar-footer,
+  .offline-banner,
+  .sync-banner,
+  .theme-switch-wrapper,
+  .notification-bell,
+  button,
+  select,
+  input,
+  a[href],
+  iframe,
+  .leaflet-control-container {
+    display: none !important;
+  }
+
+  /* 3. Mostrar la cabecera institucional premium (Azul) */
+  .print-only-header {
+    display: block !important;
+    margin-bottom: 24px !important;
+    border-bottom: 3px solid #1E40AF !important; /* Azul Rey */
+    padding-bottom: 16px !important;
+    background: #F0F9FF !important; /* Soft Blue background accent */
+    padding: 20px !important;
+    border-radius: 8px !important;
+  }
+
+  .print-only-header h1 {
+    color: #1E40AF !important;
+    font-size: 1.8rem !important;
+    font-weight: 800 !important;
+    margin: 0 !important;
+    letter-spacing: -0.5px !important;
+  }
+
+  .print-only-header span {
+    color: #2563EB !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.5px !important;
+  }
+
+  .print-only-header h3 {
+    color: #1E293B !important;
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+  }
+
+  .print-only-header p {
+    color: #475569 !important;
+    font-size: 0.8rem !important;
+    margin: 4px 0 0 0 !important;
+  }
+
+  .print-only-header h2 {
+    color: #1E40AF !important;
+    font-size: 1.3rem !important;
+    font-weight: 700 !important;
+    margin: 16px 0 0 0 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+  }
+
+  /* 4. Tarjetas de KPIs (Indicadores en Fila) */
+  .kpi-main-panel {
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  .stats-row {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 12px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .stat-card {
+    background: #F0F9FF !important; /* Soft blue background */
+    border: 1px solid #BEE3F8 !important;
+    border-left: 4px solid #2563EB !important; /* Borde izquierdo azul */
+    padding: 12px !important;
+    border-radius: 6px !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+  }
+
+  .stat-value {
+    color: #1E3A8A !important; /* Navy Blue */
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+  }
+
+  .stat-label {
+    color: #475569 !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.5px !important;
+    margin-bottom: 4px !important;
+    display: block !important;
+  }
+
+  /* 5. Gráficos y Tablas */
+  .card {
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    border: 1px solid #E2E8F0 !important;
+    border-radius: 8px !important;
+    padding: 16px !important;
+    margin-bottom: 20px !important;
+    page-break-inside: avoid !important;
+    box-shadow: none !important;
+  }
+
+  .card h4 {
+    color: #1E3A8A !important;
+    border-left: 3px solid #2563EB !important;
+    padding-left: 8px !important;
+    margin-top: 0 !important;
+    margin-bottom: 12px !important;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-top: 8px !important;
+  }
+
+  table th {
+    background: #DBEAFE !important; /* Azul claro para cabecera de tabla */
+    color: #1E3A8A !important; /* Navy */
+    font-weight: 700 !important;
+    border: 1px solid #BFDBFE !important;
+    padding: 8px !important;
+    font-size: 0.85rem !important;
+  }
+
+  table td {
+    border: 1px solid #E2E8F0 !important;
+    padding: 8px !important;
+    font-size: 0.85rem !important;
+    color: #1E293B !important;
+  }
+
+  /* 6. Resumen Ejecutivo (Análisis Corporativo Azul) */
+  .analysis-card {
+    background: #F0F9FF !important;
+    border: 1px solid #BFDBFE !important;
+    border-left: 5px solid #1E40AF !important; /* Borde grueso azul rey */
+    padding: 20px !important;
+    border-radius: 8px !important;
+    margin-top: 24px !important;
+    page-break-inside: avoid !important;
+  }
+
+  .analysis-card h4 {
+    color: #1E40AF !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-bottom: 4px !important;
+    font-weight: 800 !important;
+  }
+
+  .analysis-card p {
+    color: #475569 !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* 7. Ajustes de imágenes, mapas y canvas */
+  canvas {
+    max-height: 200px !important;
+    width: 100% !important;
+  }
+
+  #kpiMap {
+    height: 240px !important;
+    border: 1px solid #BFDBFE !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* 8. Desactivar animaciones */
+  .animate-fade-in {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  /* Configuración de Página A4 */
+  @page {
+    size: A4 portrait;
+    margin: 15mm 15mm;
+  }
+}
