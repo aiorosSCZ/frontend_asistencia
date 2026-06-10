@@ -45,6 +45,7 @@ export class RegistroTaller implements AfterViewInit {
   center: google.maps.LatLngLiteral = { lat: -17.7833, lng: -63.1821 };
   zoom = 11;
   markerPosition: google.maps.LatLngLiteral | null = null;
+  markerOptions: google.maps.MarkerOptions = {};
 
   constructor(
     private router: Router,
@@ -55,7 +56,26 @@ export class RegistroTaller implements AfterViewInit {
 
   ngAfterViewInit() {
     // Esperamos un tick para asegurar que el DOM esté listo
-    setTimeout(() => this.initAutocomplete(), 200);
+    setTimeout(() => {
+      this.initAutocomplete();
+      this.initMarkerOptions();
+    }, 200);
+  }
+
+  initMarkerOptions() {
+    try {
+      if (typeof google !== 'undefined' && google.maps) {
+        this.markerOptions = {
+          icon: {
+            url: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="%230066FF" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>',
+            scaledSize: new google.maps.Size(32, 32),
+            anchor: new google.maps.Point(16, 32)
+          }
+        };
+      }
+    } catch (e) {
+      console.error('Error al inicializar markerOptions:', e);
+    }
   }
 
   initAutocomplete() {

@@ -73,7 +73,7 @@
         <div class="map-container glass-panel">
           <google-map height="250px" width="100%" [center]="center" [zoom]="zoom" [options]="mapOptions"
             (mapClick)="onMapClick($event)">
-            <map-marker *ngIf="markerPosition" [position]="markerPosition"></map-marker>
+            <map-marker *ngIf="markerPosition" [position]="markerPosition" [options]="markerOptions"></map-marker>
           </google-map>
         </div>
 
